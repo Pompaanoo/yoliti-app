@@ -77,7 +77,7 @@ create table public.lesson_progress (
 -- ╔══════════════════════════════════════════════════════════════╗
 -- ║  Helpers de rol (security definer para evitar recursión RLS)  ║
 -- ╚══════════════════════════════════════════════════════════════╝
-create or replace function public.current_role()
+create or replace function public.current_user_role()
 returns public.user_role
 language sql stable security definer set search_path = public as $$
   select role from public.profiles where id = auth.uid();
@@ -86,7 +86,7 @@ $$;
 create or replace function public.is_admin()
 returns boolean
 language sql stable security definer set search_path = public as $$
-  select coalesce(public.current_role() = 'super_admin', false);
+  select coalesce(public.current_user_role() = 'super_admin', false);
 $$;
 
 -- ─── Trigger: crear perfil automáticamente al registrarse ────────
@@ -136,7 +136,7 @@ create policy "cursos publicados visibles para todos" on public.courses
 create policy "maestro crea sus cursos" on public.courses
   for insert with check (
     teacher_id = auth.uid()
-    and public.current_role() in ('maestro', 'super_admin')
+    and public.current_user_role() in ('maestro', 'super_admin')
   );
 create policy "maestro edita sus cursos" on public.courses
   for update using (teacher_id = auth.uid() or public.is_admin());
