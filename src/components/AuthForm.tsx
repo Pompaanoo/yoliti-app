@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
 
 export default function AuthForm({ mode }: { mode: "login" | "registro" }) {
   const router = useRouter();
@@ -66,13 +67,8 @@ export default function AuthForm({ mode }: { mode: "login" | "registro" }) {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-12">
-      <Link href="/" className="mb-8 flex items-center justify-center gap-2">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-content">
-          <i className="fa-solid fa-feather" />
-        </span>
-        <span className="text-2xl font-extrabold text-secondary">
-          Yoliti <span className="text-primary">Academy</span>
-        </span>
+      <Link href="/" className="mb-8 flex justify-center">
+        <Logo className="h-14" />
       </Link>
 
       <div className="rounded-box border border-base-300 bg-base-100 p-8 shadow-lg">

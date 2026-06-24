@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Yoliti Academy — Aprendizaje con propósito",
+  title: "Centro Yolitia — Aprendizaje con propósito",
   description:
     "Cursos en línea de bienestar, inteligencia emocional y comunicación clínica. Plataforma educativa Yoliti.",
 };

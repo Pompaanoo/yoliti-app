@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireUser } from "@/lib/auth";
+import { requireUser, getProfile } from "@/lib/auth";
 import LessonPlayer from "@/components/LessonPlayer";
 import type { Course, Lesson, Module } from "@/lib/types";
 
@@ -27,7 +27,13 @@ export default async function AprenderPage({
   if (!course) notFound();
   const c = course as Course;
 
-  // Verificar inscripción (los cursos gratis se consideran accesibles).
+  // El maestro dueño del curso y el super_admin pueden previsualizar.
+  const profile = await getProfile();
+  const isStaff =
+    profile?.role === "super_admin" || c.teacher_id === user.id;
+
+  // Verificar inscripción. Se exige para CUALQUIER curso (gratis o pago):
+  // sin sesión (lo bloquea el middleware) o sin inscripción → sin acceso.
   const { data: enr } = await supabase
     .from("enrollments")
     .select("id")
@@ -35,7 +41,7 @@ export default async function AprenderPage({
     .eq("course_id", c.id)
     .maybeSingle();
 
-  if (!enr && c.price_cents > 0) {
+  if (!enr && !isStaff) {
     return (
       <div className="mx-auto max-w-md rounded-box border border-base-300 bg-base-100 p-8 text-center">
         <i className="fa-solid fa-lock mb-3 text-3xl text-accent" />

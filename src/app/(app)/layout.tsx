@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/auth";
+import Logo from "@/components/Logo";
 
 export default async function AppLayout({
   children,
@@ -32,11 +33,8 @@ export default async function AppLayout({
     <div className="flex min-h-screen bg-base-200">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col border-r border-base-300 bg-base-100 md:flex">
-        <Link href="/" className="flex items-center gap-2 border-b border-base-300 p-5">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content">
-            <i className="fa-solid fa-feather" />
-          </span>
-          <span className="font-extrabold text-secondary">Yoliti</span>
+        <Link href="/" className="flex items-center border-b border-base-300 p-5">
+          <Logo className="h-9" />
         </Link>
         <nav className="flex-1 p-3">
           <ul className="menu gap-1">
@@ -74,8 +72,8 @@ export default async function AppLayout({
       <div className="flex flex-1 flex-col">
         {/* Top bar móvil */}
         <header className="flex items-center justify-between border-b border-base-300 bg-base-100 px-4 py-3 md:hidden">
-          <Link href="/" className="font-extrabold text-secondary">
-            Yoliti
+          <Link href="/" className="flex items-center">
+            <Logo className="h-7" />
           </Link>
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">

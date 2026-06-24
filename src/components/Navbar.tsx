@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getProfile } from "@/lib/auth";
+import Logo from "@/components/Logo";
 
 const NAV = [
   { href: "/cursos", label: "Cursos" },
@@ -16,13 +17,8 @@ export default async function Navbar() {
       <div className="navbar mx-auto max-w-7xl px-4">
         {/* Marca */}
         <div className="flex-1">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content">
-              <i className="fa-solid fa-feather" />
-            </span>
-            <span className="text-xl font-extrabold tracking-tight text-secondary">
-              Yoliti<span className="text-primary"> Academy</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Logo className="h-9 md:h-10" />
           </Link>
         </div>
 
