@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Course } from "@/lib/types";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/format";
 
 const LEVEL_STYLES: Record<string, string> = {
   principiante: "badge-success",

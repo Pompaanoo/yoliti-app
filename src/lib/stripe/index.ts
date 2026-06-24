@@ -16,11 +16,3 @@ export const stripe = stripeEnabled
       apiVersion: "2025-02-24.acacia",
     })
   : null;
-
-/** Formatea centavos a una cadena tipo "$499.00 MXN". */
-export function formatPrice(cents: number, currency = "mxn") {
-  return new Intl.NumberFormat("es-MX", {
-    style: "currency",
-    currency: currency.toUpperCase(),
-  }).format(cents / 100);
-}

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/format";
 import EnrollButton from "@/components/EnrollButton";
 import type { Course, Lesson, Module } from "@/lib/types";
 

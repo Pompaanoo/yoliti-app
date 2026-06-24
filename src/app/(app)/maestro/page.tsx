@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/format";
 import type { Course } from "@/lib/types";
 
 export const metadata = { title: "Panel de maestro — Yoliti Academy" };
