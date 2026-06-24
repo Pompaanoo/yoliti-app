@@ -51,28 +51,35 @@ export default function LessonPlayer({
                 Módulo {i + 1}: {m.title}
               </p>
               <ul className="mt-1 space-y-1">
-                {[...m.lessons]
-                  .sort((a, b) => a.position - b.position)
-                  .map((l) => (
-                    <li key={l.id}>
-                      <button
-                        onClick={() => setActiveId(l.id)}
-                        className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition ${
-                          l.id === activeId
-                            ? "bg-primary text-primary-content"
-                            : "hover:bg-base-300"
-                        }`}
-                      >
-                        <i className="fa-solid fa-circle-play text-xs" />
-                        <span className="flex-1 truncate">{l.title}</span>
-                        {l.duration_minutes && (
-                          <span className="text-xs opacity-60">
-                            {l.duration_minutes}m
-                          </span>
-                        )}
-                      </button>
-                    </li>
-                  ))}
+                {m.lessons.length === 0 ? (
+                  <li className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-base-content/40">
+                    <i className="fa-solid fa-lock text-xs" />
+                    <span>Contenido para miembros</span>
+                  </li>
+                ) : (
+                  [...m.lessons]
+                    .sort((a, b) => a.position - b.position)
+                    .map((l) => (
+                      <li key={l.id}>
+                        <button
+                          onClick={() => setActiveId(l.id)}
+                          className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition ${
+                            l.id === activeId
+                              ? "bg-primary text-primary-content"
+                              : "hover:bg-base-300"
+                          }`}
+                        >
+                          <i className="fa-solid fa-circle-play text-xs" />
+                          <span className="flex-1 truncate">{l.title}</span>
+                          {l.duration_minutes && (
+                            <span className="text-xs opacity-60">
+                              {l.duration_minutes}m
+                            </span>
+                          )}
+                        </button>
+                      </li>
+                    ))
+                )}
               </ul>
             </div>
           ))}

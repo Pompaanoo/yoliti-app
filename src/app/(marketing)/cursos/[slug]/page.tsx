@@ -99,37 +99,57 @@ export default async function CourseDetailPage({
                   El temario se mostrará aquí cuando el maestro agregue módulos.
                 </p>
               )}
-              {modules.map((m, i) => (
-                <div
-                  key={m.id}
-                  className="collapse collapse-arrow border border-base-300 bg-base-100"
-                >
-                  <input type="checkbox" defaultChecked={i === 0} />
-                  <div className="collapse-title font-semibold">
-                    Módulo {i + 1}: {m.title}
+              {modules.map((m, i) => {
+                const locked = (m.lessons ?? []).length === 0;
+                return (
+                  <div
+                    key={m.id}
+                    className={`collapse collapse-arrow border border-base-300 ${
+                      locked ? "bg-base-200" : "bg-base-100"
+                    }`}
+                  >
+                    <input type="checkbox" defaultChecked={i === 0 && !locked} />
+                    <div className="collapse-title flex items-center gap-2 font-semibold">
+                      {locked && (
+                        <i className="fa-solid fa-lock text-sm text-base-content/40" />
+                      )}
+                      <span className={locked ? "text-base-content/60" : ""}>
+                        Módulo {i + 1}: {m.title}
+                      </span>
+                    </div>
+                    <div className="collapse-content">
+                      {locked ? (
+                        <div className="flex items-start gap-3 rounded-lg bg-base-100 p-3 text-sm text-base-content/60">
+                          <i className="fa-solid fa-crown mt-0.5 text-accent" />
+                          <span>
+                            Contenido exclusivo para miembros. Inscríbete en el
+                            curso para desbloquear este módulo.
+                          </span>
+                        </div>
+                      ) : (
+                        <ul className="space-y-2">
+                          {(m.lessons ?? [])
+                            .sort((a, b) => a.position - b.position)
+                            .map((l) => (
+                              <li
+                                key={l.id}
+                                className="flex items-center gap-3 text-sm text-base-content/70"
+                              >
+                                <i className="fa-solid fa-circle-play text-primary" />
+                                {l.title}
+                                {l.duration_minutes && (
+                                  <span className="ml-auto text-xs text-base-content/40">
+                                    {l.duration_minutes} min
+                                  </span>
+                                )}
+                              </li>
+                            ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
-                  <div className="collapse-content">
-                    <ul className="space-y-2">
-                      {(m.lessons ?? [])
-                        .sort((a, b) => a.position - b.position)
-                        .map((l) => (
-                          <li
-                            key={l.id}
-                            className="flex items-center gap-3 text-sm text-base-content/70"
-                          >
-                            <i className="fa-solid fa-circle-play text-primary" />
-                            {l.title}
-                            {l.duration_minutes && (
-                              <span className="ml-auto text-xs text-base-content/40">
-                                {l.duration_minutes} min
-                              </span>
-                            )}
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
