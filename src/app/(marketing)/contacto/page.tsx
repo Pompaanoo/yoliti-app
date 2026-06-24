@@ -10,30 +10,39 @@ export default function ContactoPage() {
 
       <form className="mt-10 space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
-          <label className="form-control">
-            <span className="label-text mb-1 font-medium">Nombre</span>
+          <div>
+            <label htmlFor="nombre" className="mb-2 block text-sm font-medium">
+              Nombre
+            </label>
             <input
+              id="nombre"
               type="text"
-              className="input input-bordered"
+              className="input w-full"
               placeholder="Tu nombre"
             />
-          </label>
-          <label className="form-control">
-            <span className="label-text mb-1 font-medium">Correo</span>
+          </div>
+          <div>
+            <label htmlFor="correo" className="mb-2 block text-sm font-medium">
+              Correo
+            </label>
             <input
+              id="correo"
               type="email"
-              className="input input-bordered"
+              className="input w-full"
               placeholder="tucorreo@ejemplo.com"
             />
-          </label>
+          </div>
         </div>
-        <label className="form-control">
-          <span className="label-text mb-1 font-medium">Mensaje</span>
+        <div>
+          <label htmlFor="mensaje" className="mb-2 block text-sm font-medium">
+            Mensaje
+          </label>
           <textarea
-            className="textarea textarea-bordered h-32"
+            id="mensaje"
+            className="textarea h-32 w-full"
             placeholder="¿En qué podemos ayudarte?"
           />
-        </label>
+        </div>
         <button type="button" className="btn btn-primary btn-block">
           Enviar mensaje
         </button>

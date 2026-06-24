@@ -71,7 +71,7 @@ export default function AuthForm({ mode }: { mode: "login" | "registro" }) {
         <Logo className="h-14" />
       </Link>
 
-      <div className="rounded-box border border-base-300 bg-base-100 p-8 shadow-lg">
+      <div className="rounded-box border border-base-300 bg-base-100 p-8 shadow-lg sm:p-10">
         <h1 className="text-2xl font-bold text-secondary">
           {isLogin ? "Bienvenido de vuelta" : "Crea tu cuenta"}
         </h1>
@@ -81,43 +81,58 @@ export default function AuthForm({ mode }: { mode: "login" | "registro" }) {
             : "Empieza gratis en menos de un minuto."}
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-7 space-y-5">
           {!isLogin && (
-            <label className="form-control">
-              <span className="label-text mb-1 font-medium">Nombre completo</span>
+            <div>
+              <label
+                htmlFor="fullName"
+                className="mb-2 block text-sm font-medium"
+              >
+                Nombre completo
+              </label>
               <input
+                id="fullName"
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="input input-bordered"
+                className="input w-full"
                 placeholder="María García"
               />
-            </label>
+            </div>
           )}
-          <label className="form-control">
-            <span className="label-text mb-1 font-medium">Correo</span>
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium">
+              Correo
+            </label>
             <input
+              id="email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input input-bordered"
+              className="input w-full"
               placeholder="tucorreo@ejemplo.com"
             />
-          </label>
-          <label className="form-control">
-            <span className="label-text mb-1 font-medium">Contraseña</span>
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-medium"
+            >
+              Contraseña
+            </label>
             <input
+              id="password"
               type="password"
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input input-bordered"
+              className="input w-full"
               placeholder="••••••••"
             />
-          </label>
+          </div>
 
           {error && (
             <div className="alert alert-error py-2 text-sm">
