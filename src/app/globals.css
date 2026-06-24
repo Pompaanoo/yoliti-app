@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: yoliti --default, dark;
+}
+
+/* ─── Tema Yoliti (paleta original del sitio estático) ─────────── */
+@plugin "daisyui/theme" {
+  name: "yoliti";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-primary: #2aaa99;
+  --color-primary-content: #ffffff;
+  --color-secondary: #0d5c6e;
+  --color-secondary-content: #ffffff;
+  --color-accent: #e8703a;
+  --color-accent-content: #ffffff;
+  --color-neutral: #162e22;
+  --color-neutral-content: #f5e6da;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #f7f3ee;
+  --color-base-300: #f5e6da;
+  --color-base-content: #162e22;
+
+  --color-info: #a8d8ea;
+  --color-success: #2aaa99;
+  --color-warning: #e8703a;
+  --color-error: #dc2626;
+
+  --radius-selector: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Utilidades de marca disponibles como clases Tailwind:
+   bg-brand-primary, text-brand-accent, etc. */
+@theme {
+  --color-brand-primary: #2aaa99;
+  --color-brand-primary-dk: #0d5c6e;
+  --color-brand-primary-lt: #5ecfca;
+  --color-brand-accent: #e8703a;
+  --color-brand-accent-dk: #c85e2a;
+  --color-brand-dark: #162e22;
+  --color-brand-sky: #a8d8ea;
+  --color-brand-cream: #f5e6da;
+
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #0d5c6e 0%, #2aaa99 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #2aaa99 0%, #0d5c6e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

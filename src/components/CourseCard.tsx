@@ -1,0 +1,54 @@
+import Link from "next/link";
+import type { Course } from "@/lib/types";
+import { formatPrice } from "@/lib/stripe";
+
+const LEVEL_STYLES: Record<string, string> = {
+  principiante: "badge-success",
+  intermedio: "badge-warning",
+  avanzado: "badge-error",
+};
+
+export default function CourseCard({ course }: { course: Course }) {
+  return (
+    <Link
+      href={`/cursos/${course.slug}`}
+      className="group card overflow-hidden border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+    >
+      <figure className="hero-gradient relative h-40">
+        {course.cover_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={course.cover_url}
+            alt={course.title}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <i className="fa-solid fa-book-open text-5xl text-white/80" />
+        )}
+      </figure>
+      <div className="card-body gap-3 p-5">
+        <div className="flex items-center gap-2">
+          <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm`}>
+            {course.level}
+          </span>
+        </div>
+        <h3 className="card-title text-lg leading-snug group-hover:text-primary">
+          {course.title}
+        </h3>
+        {course.subtitle && (
+          <p className="text-sm text-base-content/60">{course.subtitle}</p>
+        )}
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-lg font-bold text-secondary">
+            {course.price_cents === 0
+              ? "Gratis"
+              : formatPrice(course.price_cents, course.currency)}
+          </span>
+          <span className="text-sm font-medium text-primary">
+            Ver curso <i className="fa-solid fa-arrow-right" />
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}

@@ -1,0 +1,21 @@
+-- Datos de ejemplo para desarrollo.
+-- 1) Regístrate en la app con 3 correos.
+-- 2) Promueve roles ejecutando esto en el SQL Editor:
+--
+--   update public.profiles set role = 'super_admin'
+--     where id = (select id from auth.users where email = 'admin@yoliti.com');
+--   update public.profiles set role = 'maestro'
+--     where id = (select id from auth.users where email = 'maestro@yoliti.com');
+--
+-- 3) Crea cursos de ejemplo (reemplaza TEACHER_UUID por el id del maestro):
+--
+-- insert into public.courses (slug, title, subtitle, description, level, price_cents, currency, status, teacher_id)
+-- values
+--   ('espanol-clinico-aplicado', 'Español Clínico Aplicado',
+--    'Comunícate con confianza en entornos de salud',
+--    'Domina la terminología y la comunicación clínica en español.',
+--    'intermedio', 49900, 'mxn', 'publicado', 'TEACHER_UUID'),
+--   ('inteligencia-emocional', 'Inteligencia Emocional para Profesionales',
+--    'Gestiona emociones en contextos de alta exigencia',
+--    'Herramientas prácticas de autoconciencia y regulación.',
+--    'principiante', 0, 'mxn', 'publicado', 'TEACHER_UUID');

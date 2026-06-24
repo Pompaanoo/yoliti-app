@@ -1,0 +1,110 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getProfile } from "@/lib/auth";
+
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const profile = await getProfile();
+  if (!profile) redirect("/login");
+
+  const links = [
+    { href: "/dashboard", label: "Mi aprendizaje", icon: "fa-graduation-cap" },
+  ];
+  if (profile.role === "maestro" || profile.role === "super_admin") {
+    links.push({
+      href: "/maestro",
+      label: "Panel maestro",
+      icon: "fa-chalkboard-user",
+    });
+  }
+  if (profile.role === "super_admin") {
+    links.push({
+      href: "/admin",
+      label: "Administración",
+      icon: "fa-shield-halved",
+    });
+  }
+
+  return (
+    <div className="flex min-h-screen bg-base-200">
+      {/* Sidebar */}
+      <aside className="hidden w-64 flex-col border-r border-base-300 bg-base-100 md:flex">
+        <Link href="/" className="flex items-center gap-2 border-b border-base-300 p-5">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content">
+            <i className="fa-solid fa-feather" />
+          </span>
+          <span className="font-extrabold text-secondary">Yoliti</span>
+        </Link>
+        <nav className="flex-1 p-3">
+          <ul className="menu gap-1">
+            {links.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href}>
+                  <i className={`fa-solid ${l.icon} w-4`} /> {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="border-t border-base-300 p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-secondary-content text-sm font-bold">
+              {(profile.full_name || "U").charAt(0).toUpperCase()}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium">
+                {profile.full_name || "Usuario"}
+              </p>
+              <p className="text-xs capitalize text-base-content/50">
+                {profile.role.replace("_", " ")}
+              </p>
+            </div>
+          </div>
+          <form action="/auth/sign-out" method="post" className="mt-3">
+            <button className="btn btn-ghost btn-sm btn-block justify-start text-error">
+              <i className="fa-solid fa-right-from-bracket" /> Cerrar sesión
+            </button>
+          </form>
+        </div>
+      </aside>
+
+      <div className="flex flex-1 flex-col">
+        {/* Top bar móvil */}
+        <header className="flex items-center justify-between border-b border-base-300 bg-base-100 px-4 py-3 md:hidden">
+          <Link href="/" className="font-extrabold text-secondary">
+            Yoliti
+          </Link>
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
+              <i className="fa-solid fa-bars" />
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu z-50 mt-2 w-52 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl"
+            >
+              {links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href}>
+                    <i className={`fa-solid ${l.icon} w-4`} /> {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <form action="/auth/sign-out" method="post">
+                  <button className="text-error">
+                    <i className="fa-solid fa-right-from-bracket w-4" /> Salir
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </header>
+
+        <main className="flex-1 p-6 md:p-10">{children}</main>
+      </div>
+    </div>
+  );
+}
