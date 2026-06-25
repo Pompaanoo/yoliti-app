@@ -109,7 +109,9 @@
   },
   "contacto": {
     "title": "Contact us",
-    "sub": "We're here to help you find the ideal course for your clinical practice.",
+    "connectLabel": "Connect with Yolitia Academy",
+    "sub": "At Yolitia Academy, we're here to answer your questions, guide you through our courses, and support your professional growth. Whether you'd like more information about enrollment, payments, or available programs, our team is ready to listen and assist you.",
+    "locationTitle": "Our location",
     "formTitle": "Send us a message",
     "formSub": "We respond within 24 hours on business days.",
     "formName": "Full name",

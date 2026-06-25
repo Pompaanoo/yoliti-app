@@ -25,9 +25,14 @@ export default async function ContactoPage() {
     <div className="bg-base-200">
       {/* Encabezado */}
       <section className="bg-base-100">
-        <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8">
+        <div className="mx-auto max-w-7xl px-6 py-14 sm:px-8">
+          <span className="mb-3 block text-xs font-semibold uppercase tracking-widest text-primary">
+            {t("connectLabel")}
+          </span>
           <h1 className="text-4xl font-extrabold text-secondary">{t("title")}</h1>
-          <p className="mt-2 text-base-content/60">{t("sub")}</p>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-base-content/60">
+            {t("sub")}
+          </p>
         </div>
       </section>
 
@@ -138,6 +143,32 @@ export default async function ContactoPage() {
           </div>
         </div>
       </div>
+
+      {/* Ubicación */}
+      <section className="bg-base-200 pb-12">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+              <i className="fa-solid fa-location-dot" />
+            </span>
+            <h2 className="text-xl font-bold text-secondary">{t("locationTitle")}</h2>
+          </div>
+          <div className="overflow-hidden rounded-box border border-base-300 shadow-sm">
+            <iframe
+              title="Yolitia Academy location"
+              src="https://maps.google.com/maps?q=3450+E+Russell+Rd,+Las+Vegas,+NV+89120&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="380"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          <p className="mt-3 text-xs text-base-content/40">
+            3450 E Russell Rd, Las Vegas, NV 89120
+          </p>
+        </div>
+      </section>
 
       {/* FAQ */}
       <section className="bg-base-100">
