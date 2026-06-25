@@ -5,7 +5,14 @@ import CourseCard from "@/components/CourseCard";
 import { POSTS, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/blog";
 import type { Course } from "@/lib/types";
 
-const STAT_NUMBERS = ["1,200+", "10+", "15", "12"];
+const STAT_NUMBERS = ["0+", "0+", "0+", "1%"];
+
+const FEATURE_ICONS = [
+  "fa-crosshairs",
+  "fa-pencil",
+  "fa-brain",
+  "fa-users",
+];
 
 export default async function HomePage() {
   const t = await getTranslations("home");
@@ -21,9 +28,7 @@ export default async function HomePage() {
   const recentPosts = POSTS.slice(0, 3);
 
   const statLabels = t.raw("statsLabels") as string[];
-  const heroTags = t.raw("heroTags") as string[];
-  const target1Items = t.raw("target1Items") as string[];
-  const target2Items = t.raw("target2Items") as string[];
+  const heroFeatures = t.raw("heroFeatures") as string[];
   const designedItems = t.raw("designedItems") as string[];
   const mentors = t.raw("mentors") as { name: string; role: string; bio: string }[];
   const testimonials = t.raw("testimonials") as {
@@ -69,20 +74,13 @@ export default async function HomePage() {
                 {t("heroBtn2")}
               </Link>
             </div>
-            <div className="mt-8 flex flex-wrap gap-5 text-sm text-white/60">
-              {heroTags.map((tag) => (
-                <span key={tag} className="flex items-center gap-1.5">
-                  <i className="fa-solid fa-check text-info" /> {tag}
-                </span>
-              ))}
-            </div>
           </div>
           <div className="relative hidden lg:block">
             <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-info/15" />
             <div className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-accent/15" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://placehold.co/560x420/162E22/5ECFCA?text=Sesión+Clínica"
+              src="https://yolitiacademy.com/wp-content/uploads/2024/04/pic-5.jpg"
               alt="Centro Yolitia"
               className="relative z-10 w-full rounded-box shadow-2xl"
             />
@@ -103,13 +101,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-b border-base-300 bg-base-100">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 text-center sm:px-8 lg:grid-cols-4">
-          {STAT_NUMBERS.map((num, i) => (
-            <div key={i}>
-              <p className="mb-1 text-4xl font-bold text-primary">{num}</p>
-              <p className="text-sm text-base-content/50">{statLabels[i]}</p>
+      {/* Feature pills strip */}
+      <section className="bg-secondary text-secondary-content">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-8 sm:px-8 lg:grid-cols-4">
+          {heroFeatures.map((feat, i) => (
+            <div key={feat} className="flex items-center gap-3">
+              <span className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-primary/20 text-primary">
+                <i className={`fa-solid ${FEATURE_ICONS[i]} text-sm`} />
+              </span>
+              <p className="text-sm font-semibold">{feat}</p>
             </div>
           ))}
         </div>
@@ -118,15 +118,12 @@ export default async function HomePage() {
       {/* Designed for Real Human Understanding */}
       <section className="bg-base-100">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-8 lg:grid-cols-2">
-          {/* Photo */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://yolitiacademy.com/wp-content/uploads/2024/04/pic-5.jpg"
             alt="Yolitia Academy student"
             className="w-full rounded-box object-cover shadow-lg"
           />
-
-          {/* Text content */}
           <div>
             <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-primary">
               {t("designedLabel")}
@@ -138,7 +135,6 @@ export default async function HomePage() {
             <div className="mt-6 space-y-4 leading-relaxed text-base-content/70">
               <p>{t("designedP1")}</p>
               <p>{t("designedP2")}</p>
-              <p>{t("designedP3")}</p>
             </div>
             <ul className="mt-7 space-y-2.5 text-sm font-medium text-base-content/80">
               {designedItems.map((item) => (
@@ -165,6 +161,9 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold text-secondary">
                 {t("featuredTitle")}
               </h2>
+              <p className="mt-2 max-w-2xl text-sm text-base-content/60">
+                {t("featuredDesc")}
+              </p>
             </div>
             <Link href="/cursos" className="btn btn-outline btn-primary btn-sm hidden lg:flex">
               {c("viewAll")} <i className="fa-solid fa-arrow-right" />
@@ -184,69 +183,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ¿Para quién es? */}
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
-        <div className="mb-14 text-center">
-          <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
-            {t("forwhomLabel")}
-          </span>
-          <h2 className="text-3xl font-bold text-secondary">
-            {t("forwhomTitle")}
-          </h2>
-        </div>
-
-        <div className="mb-16 grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <span className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-xl text-primary">
-              <i className="fa-solid fa-user-doctor" />
-            </span>
-            <h3 className="mb-4 text-2xl font-bold text-secondary">
-              {t("target1Title")}
-            </h3>
-            <p className="mb-5 leading-relaxed text-base-content/70">
-              {t("target1Desc")}
-            </p>
-            <ul className="space-y-2 text-sm text-base-content/70">
-              {target1Items.map((li) => (
-                <li key={li} className="flex items-center gap-2">
-                  <i className="fa-solid fa-check text-primary" /> {li}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://placehold.co/560x380/F5E6DA/0D5C6E?text=Terapeuta+Bilingüe"
-            alt=""
-            className="w-full rounded-box shadow-lg"
-          />
-        </div>
-
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://placehold.co/560x380/A8D8EA/162E22?text=Supervisor+Clínico"
-            alt=""
-            className="order-2 w-full rounded-box shadow-lg lg:order-1"
-          />
-          <div className="order-1 lg:order-2">
-            <span className="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-accent/10 text-xl text-accent">
-              <i className="fa-solid fa-chalkboard-user" />
-            </span>
-            <h3 className="mb-4 text-2xl font-bold text-secondary">
-              {t("target2Title")}
-            </h3>
-            <p className="mb-5 leading-relaxed text-base-content/70">
-              {t("target2Desc")}
-            </p>
-            <ul className="space-y-2 text-sm text-base-content/70">
-              {target2Items.map((li) => (
-                <li key={li} className="flex items-center gap-2">
-                  <i className="fa-solid fa-check text-accent" /> {li}
-                </li>
-              ))}
-            </ul>
-          </div>
+      {/* Stats */}
+      <section className="border-b border-base-300 bg-base-100">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 text-center sm:px-8 lg:grid-cols-4">
+          {STAT_NUMBERS.map((num, i) => (
+            <div key={i}>
+              <p className="mb-1 text-4xl font-bold text-primary">{num}</p>
+              <p className="text-sm text-base-content/50">{statLabels[i]}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -328,13 +273,27 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* CTA — Start Your Transformation */}
+      <section className="bg-neutral text-neutral-content">
+        <div className="mx-auto max-w-2xl px-6 py-20 text-center">
+          <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-info">
+            {t("ctaLabel")}
+          </span>
+          <h2 className="text-4xl font-extrabold leading-tight">{t("ctaTitle")}</h2>
+          <p className="mb-8 mt-4 text-lg text-neutral-content/60">{t("ctaDesc")}</p>
+          <Link href="/cursos" className="btn btn-accent btn-lg">
+            {t("ctaBtn1")}
+          </Link>
+        </div>
+      </section>
+
       {/* Blog preview */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
+            <p className="mb-2 max-w-xl text-xs font-medium text-base-content/50">
               {t("blogLabel")}
-            </span>
+            </p>
             <h2 className="text-3xl font-bold text-secondary">{t("blogTitle")}</h2>
           </div>
           <Link href="/blog" className="btn btn-outline btn-primary btn-sm hidden lg:flex">
@@ -368,25 +327,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="bg-neutral text-neutral-content">
-        <div className="mx-auto max-w-2xl px-6 py-20 text-center">
-          <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-info">
-            {t("ctaLabel")}
-          </span>
-          <h2 className="text-4xl font-extrabold leading-tight">{t("ctaTitle")}</h2>
-          <p className="mb-8 mt-4 text-lg text-neutral-content/60">{t("ctaDesc")}</p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link href="/cursos" className="btn btn-accent btn-lg">
-              {t("ctaBtn1")}
-            </Link>
-            <Link
-              href="/contacto"
-              className="btn btn-lg border-white/20 bg-white/5 text-white hover:bg-white/10"
-            >
-              {t("ctaBtn2")}
-            </Link>
+      {/* Start Your Learning Journey */}
+      <section className="bg-primary text-primary-content">
+        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center sm:px-8">
+          <div className="absolute right-8 top-6 hidden text-primary-content/20 lg:block">
+            <i className="fa-solid fa-sun text-7xl" />
           </div>
+          <h2 className="text-4xl font-extrabold leading-tight lg:text-5xl">
+            {t("journeyTitle")}
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-primary-content/80">
+            {t("journeyDesc")}
+          </p>
+          <Link href="/cursos" className="btn btn-accent btn-lg mt-8">
+            {t("journeyBtn")}
+          </Link>
         </div>
       </section>
     </>
