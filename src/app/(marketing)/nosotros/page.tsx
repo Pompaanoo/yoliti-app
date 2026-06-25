@@ -9,21 +9,20 @@ export const metadata = {
 
 const VALUE_STYLES = [
   ["fa-heart", "text-primary", "bg-primary/10"],
-  ["fa-microscope", "text-accent", "bg-accent/10"],
-  ["fa-hands-holding-circle", "text-secondary", "bg-info/30"],
-  ["fa-arrows-rotate", "text-neutral", "bg-neutral/10"],
+  ["fa-lightbulb", "text-accent", "bg-accent/10"],
+  ["fa-brain", "text-secondary", "bg-info/30"],
+  ["fa-check-circle", "text-neutral", "bg-neutral/10"],
 ];
 
 const TEAM_INFO = [
-  ["https://placehold.co/200x200/0D5C6E/5ECFCA?text=YO", "Yoliti Osorio, PhD"],
-  ["https://placehold.co/200x200/E8703A/FFFFFF?text=CM", "Carlos Martínez, LCSW"],
-  ["https://placehold.co/200x200/162E22/5ECFCA?text=AR", "Ana Reyes, PhD"],
+  ["https://placehold.co/200x200/0D5C6E/5ECFCA?text=GW", "Dr. Gerardo Wence-Munoz, PhD"],
 ];
 
 export default async function NosotrosPage() {
   const t = await getTranslations("nosotros");
   const values = t.raw("values") as { title: string; desc: string }[];
   const team = t.raw("team") as { role: string; bio: string }[];
+  const whoWeServe = t.raw("whoWeServeItems") as { icon: string; label: string }[];
 
   return (
     <div>
@@ -100,20 +99,6 @@ export default async function NosotrosPage() {
             <p className="mb-6 leading-relaxed text-base-content/70">
               {t("historyP2")}
             </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-xl bg-base-100 p-4 text-center shadow-sm">
-                <p className="text-3xl font-bold text-primary">2009</p>
-                <p className="mt-1 text-xs text-base-content/40">
-                  {t("historyFounded")}
-                </p>
-              </div>
-              <div className="rounded-xl bg-base-100 p-4 text-center shadow-sm">
-                <p className="text-3xl font-bold text-primary">1,200+</p>
-                <p className="mt-1 text-xs text-base-content/40">
-                  {t("historyStudents")}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -157,7 +142,7 @@ export default async function NosotrosPage() {
               {t("teamTitle")}
             </h2>
           </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="mx-auto max-w-lg">
             {team.map((member, i) => {
               const [img, name] = TEAM_INFO[i];
               return (
@@ -180,22 +165,28 @@ export default async function NosotrosPage() {
         </div>
       </section>
 
-      {/* Acreditaciones */}
+      {/* A quién servimos */}
       <section className="border-y border-base-300 bg-base-100">
-        <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8">
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-wider text-base-content/30">
-            {t("accredLabel")}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-10">
-            {["NASW", "APA", "NBCC", "CAMFT"].map((org) => (
-              <div key={org} className="text-center">
-                <div className="mx-auto mb-2 grid h-20 w-20 place-items-center rounded-xl border border-base-300 bg-base-200">
-                  <span className="text-xs font-bold text-base-content/40">
-                    {org}
-                  </span>
-                </div>
-                <p className="text-xs text-base-content/30">
-                  {t("accredApproved")}
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+          <div className="mb-10 text-center">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
+              {t("whoWeServeLabel")}
+            </span>
+            <h2 className="text-3xl font-bold text-secondary">
+              {t("whoWeServeTitle")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {whoWeServe.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-start gap-4 rounded-xl border border-base-300 bg-base-200 p-5"
+              >
+                <span className="mt-0.5 grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                  <i className={`fa-solid ${item.icon}`} />
+                </span>
+                <p className="text-sm font-medium leading-snug text-secondary">
+                  {item.label}
                 </p>
               </div>
             ))}
