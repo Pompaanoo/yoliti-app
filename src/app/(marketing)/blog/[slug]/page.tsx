@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
-import { POSTS, getPost, localizePost, AUTHOR, CATEGORY_BADGE, CATEGORY_KEY } from "@/lib/blog";
+import { POSTS, getPost, localizePost, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/blog";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -32,8 +32,6 @@ export default async function BlogPostPage({
   const [t, locale] = await Promise.all([getTranslations("blog"), getLocale()]);
   const post = localizePost(rawPost, locale);
   const related = POSTS.map((p) => localizePost(p, locale)).filter((p) => p.slug !== post.slug).slice(0, 3);
-  const authorRole = locale === "es" ? AUTHOR.role : AUTHOR.roleEn;
-  const authorBio = locale === "es" ? AUTHOR.bio : AUTHOR.bioEn;
 
   return (
     <div className="bg-base-200">
@@ -49,30 +47,18 @@ export default async function BlogPostPage({
               Blog
             </Link>
           </div>
-          <span
-            className={`badge badge-sm w-fit border-0 font-medium ${CATEGORY_BADGE[post.category]}`}
-          >
-            {t(CATEGORY_KEY[post.category])}
-          </span>
-          <h1 className="mt-4 text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
+          <h1 className="text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
             {post.title}
           </h1>
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-base-content/50">
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/15 text-xs font-bold text-primary">
-                {AUTHOR.initials}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-secondary">
-                  {AUTHOR.name}
-                </p>
-                <p className="text-xs text-base-content/40">{authorRole}</p>
-              </div>
-            </div>
-            <span className="text-base-content/20">|</span>
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-base-content/50">
+            <span className={`badge badge-sm border-0 font-medium ${CATEGORY_BADGE[post.category]}`}>
+              {CATEGORY_LABEL[post.category]}
+            </span>
+            <span className="text-base-content/20">·</span>
             <span className="flex items-center gap-1">
               <i className="fa-solid fa-calendar text-xs" /> {post.date}
             </span>
+            <span className="text-base-content/20">·</span>
             <span className="flex items-center gap-1">
               <i className="fa-solid fa-clock text-xs" /> {post.readMin} {t("minRead")}
             </span>
@@ -96,20 +82,6 @@ export default async function BlogPostPage({
           {/* Cuerpo */}
           <article className="article-body rounded-box bg-base-100 p-8 shadow-sm lg:p-12">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
-
-            {/* Caja de autor */}
-            <div className="mt-10 flex items-start gap-4 border-t border-base-300 pt-8">
-              <span className="grid h-14 w-14 flex-shrink-0 place-items-center rounded-full bg-primary/15 font-bold text-primary">
-                {AUTHOR.initials}
-              </span>
-              <div>
-                <p className="font-bold text-secondary">{AUTHOR.name}</p>
-                <p className="mb-2 text-xs text-base-content/40">
-                  {authorRole}
-                </p>
-                <p className="text-sm text-base-content/60">{authorBio}</p>
-              </div>
-            </div>
           </article>
 
           {/* Sidebar */}
