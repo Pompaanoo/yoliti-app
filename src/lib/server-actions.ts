@@ -88,12 +88,18 @@ export async function createLesson(formData: FormData) {
     .limit(1)
     .maybeSingle();
 
-  await supabase.from("lessons").insert({
+  const { error } = await supabase.from("lessons").insert({
     module_id: moduleId,
     title,
     content_type: contentType,
     position: (last?.position ?? -1) + 1,
   });
+
+  if (error) {
+    console.error("[createLesson] Supabase error:", error.message, error.details);
+    return;
+  }
+
   revalidatePath(`/admin/cursos/${courseId}`);
 }
 
