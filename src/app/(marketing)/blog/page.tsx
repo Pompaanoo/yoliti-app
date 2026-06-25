@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { POSTS, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/blog";
+import { getTranslations } from "next-intl/server";
+import { POSTS, CATEGORY_BADGE, CATEGORY_KEY, type BlogCategory } from "@/lib/blog";
 import BlogGrid, { type BlogCardData } from "@/components/BlogGrid";
 
 export const metadata = {
@@ -8,7 +9,15 @@ export const metadata = {
     "Perspectivas clínicas, investigación y práctica reflexiva para profesionales de salud mental.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const t = await getTranslations("blog");
+
+  const catLabels: Record<BlogCategory, string> = {
+    practice: t("catPractice"),
+    self: t("catSelf"),
+    trauma: t("catTrauma"),
+  };
+
   const featured = POSTS.find((p) => p.featured) ?? POSTS[0];
   const cards: BlogCardData[] = POSTS.map(
     ({ slug, title, category, image, excerpt, date, readMin }) => ({
@@ -27,20 +36,15 @@ export default function BlogPage() {
       {/* Encabezado */}
       <section className="border-b border-base-300 bg-base-100">
         <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8">
-          <h1 className="text-4xl font-extrabold text-secondary">
-            Recursos y artículos
-          </h1>
-          <p className="mt-2 max-w-2xl text-base-content/60">
-            Perspectivas clínicas, investigación y práctica reflexiva para
-            profesionales de salud mental.
-          </p>
+          <h1 className="text-4xl font-extrabold text-secondary">{t("title")}</h1>
+          <p className="mt-2 max-w-2xl text-base-content/60">{t("sub")}</p>
         </div>
       </section>
 
       <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8">
         {/* Artículo destacado */}
         <p className="mb-5 text-xs font-semibold uppercase tracking-wider text-primary">
-          Artículo destacado
+          {t("featured")}
         </p>
         <Link
           href={`/blog/${featured.slug}`}
@@ -58,7 +62,7 @@ export default function BlogPage() {
             <span
               className={`badge badge-sm w-fit border-0 font-medium ${CATEGORY_BADGE[featured.category]}`}
             >
-              {CATEGORY_LABEL[featured.category]}
+              {catLabels[featured.category]}
             </span>
             <h2 className="mt-4 text-2xl font-bold leading-tight text-secondary group-hover:text-primary">
               {featured.title}
@@ -67,36 +71,39 @@ export default function BlogPage() {
               {featured.excerpt}
             </p>
             <p className="mt-6 text-xs text-base-content/40">
-              {featured.date} · {featured.readMin} min de lectura
+              {featured.date} · {featured.readMin} {t("minRead")}
             </p>
           </div>
         </Link>
 
         {/* Artículos recientes con filtro */}
         <p className="mb-6 text-xs font-semibold uppercase tracking-wider text-primary">
-          Artículos recientes
+          {t("recent")}
         </p>
-        <BlogGrid posts={cards} />
+        <BlogGrid
+          posts={cards}
+          catLabels={catLabels}
+          tabAll={t("tabsAll")}
+          emptyText={t("empty")}
+          minRead={t("minRead")}
+        />
       </div>
 
       {/* Newsletter */}
       <section className="bg-primary text-primary-content">
         <div className="mx-auto max-w-2xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-extrabold">Recibe artículos cada semana</h2>
-          <p className="mt-3 text-primary-content/80">
-            Insights clínicos, recursos y novedades de Centro Yolitia
-            directamente en tu bandeja de entrada.
-          </p>
+          <h2 className="text-3xl font-extrabold">{t("newsletterTitle")}</h2>
+          <p className="mt-3 text-primary-content/80">{t("newsletterDesc")}</p>
           <div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
             <input
               type="email"
               className="input w-full flex-1 text-base-content"
-              placeholder="Tu correo electrónico"
+              placeholder={t("newsletterPlaceholder")}
             />
-            <button className="btn btn-accent">Suscribirme</button>
+            <button className="btn btn-accent">{t("newsletterBtn")}</button>
           </div>
           <p className="mt-4 text-xs text-primary-content/60">
-            Sin spam. Cancela cuando quieras.
+            {t("newsletterPrivacy")}
           </p>
         </div>
       </section>

@@ -177,6 +177,13 @@
     "newsletterDesc": "Insights clínicos, recursos y novedades de Centro Yolitia directamente en tu bandeja de entrada.",
     "newsletterPlaceholder": "Tu correo electrónico",
     "newsletterBtn": "Suscribirme",
-    "newsletterPrivacy": "Sin spam. Cancela cuando quieras."
+    "newsletterPrivacy": "Sin spam. Cancela cuando quieras.",
+    "breadcrumbHome": "Inicio",
+    "relatedCourse": "Curso relacionado",
+    "relatedCourseTitle": "Español Clínico Aplicado para Psicoterapeutas",
+    "relatedCourseDesc": "Domina la terminología y la comunicación clínica en español.",
+    "relatedArticles": "Artículos relacionados",
+    "backToBlog": "Volver al blog",
+    "minRead": "min de lectura"
   }
 }

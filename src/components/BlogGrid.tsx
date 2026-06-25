@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  CATEGORY_BADGE,
-  CATEGORY_LABEL,
-  type BlogCategory,
-} from "@/lib/blog";
+import { CATEGORY_BADGE, type BlogCategory } from "@/lib/blog";
 
 export interface BlogCardData {
   slug: string;
@@ -18,14 +14,28 @@ export interface BlogCardData {
   readMin: number;
 }
 
-const TABS: { key: "all" | BlogCategory; label: string }[] = [
-  { key: "all", label: "Todos los temas" },
-  { key: "practice", label: CATEGORY_LABEL.practice },
-  { key: "self", label: CATEGORY_LABEL.self },
-  { key: "trauma", label: CATEGORY_LABEL.trauma },
-];
+interface BlogGridProps {
+  posts: BlogCardData[];
+  catLabels: Record<BlogCategory, string>;
+  tabAll: string;
+  emptyText: string;
+  minRead: string;
+}
 
-export default function BlogGrid({ posts }: { posts: BlogCardData[] }) {
+export default function BlogGrid({
+  posts,
+  catLabels,
+  tabAll,
+  emptyText,
+  minRead,
+}: BlogGridProps) {
+  const tabs: { key: "all" | BlogCategory; label: string }[] = [
+    { key: "all", label: tabAll },
+    { key: "practice", label: catLabels.practice },
+    { key: "self", label: catLabels.self },
+    { key: "trauma", label: catLabels.trauma },
+  ];
+
   const [filter, setFilter] = useState<"all" | BlogCategory>("all");
   const visible =
     filter === "all" ? posts : posts.filter((p) => p.category === filter);
@@ -34,7 +44,7 @@ export default function BlogGrid({ posts }: { posts: BlogCardData[] }) {
     <div>
       {/* Tabs de categoría */}
       <div className="mb-8 flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setFilter(t.key)}
@@ -69,7 +79,7 @@ export default function BlogGrid({ posts }: { posts: BlogCardData[] }) {
               <span
                 className={`badge badge-sm w-fit border-0 font-medium ${CATEGORY_BADGE[p.category]}`}
               >
-                {CATEGORY_LABEL[p.category]}
+                {catLabels[p.category]}
               </span>
               <h3 className="text-sm font-bold leading-snug text-secondary group-hover:text-primary">
                 {p.title}
@@ -78,7 +88,7 @@ export default function BlogGrid({ posts }: { posts: BlogCardData[] }) {
                 {p.excerpt}
               </p>
               <p className="mt-1 text-xs text-base-content/30">
-                {p.date} · {p.readMin} min
+                {p.date} · {p.readMin} {minRead}
               </p>
             </div>
           </Link>
@@ -86,9 +96,7 @@ export default function BlogGrid({ posts }: { posts: BlogCardData[] }) {
       </div>
 
       {visible.length === 0 && (
-        <p className="py-12 text-center text-base-content/50">
-          No hay artículos en esta categoría.
-        </p>
+        <p className="py-12 text-center text-base-content/50">{emptyText}</p>
       )}
     </div>
   );

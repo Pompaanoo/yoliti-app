@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  POSTS,
-  getPost,
-  AUTHOR,
-  CATEGORY_BADGE,
-  CATEGORY_LABEL,
-} from "@/lib/blog";
+import { getTranslations } from "next-intl/server";
+import { POSTS, getPost, AUTHOR, CATEGORY_BADGE, CATEGORY_KEY } from "@/lib/blog";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -34,6 +29,7 @@ export default async function BlogPostPage({
   const post = getPost(slug);
   if (!post) notFound();
 
+  const t = await getTranslations("blog");
   const related = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
@@ -43,7 +39,7 @@ export default async function BlogPostPage({
         <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8">
           <div className="mb-4 text-xs text-base-content/40">
             <Link href="/" className="hover:text-primary">
-              Inicio
+              {t("breadcrumbHome")}
             </Link>
             <span className="mx-1.5">/</span>
             <Link href="/blog" className="hover:text-primary">
@@ -53,7 +49,7 @@ export default async function BlogPostPage({
           <span
             className={`badge badge-sm w-fit border-0 font-medium ${CATEGORY_BADGE[post.category]}`}
           >
-            {CATEGORY_LABEL[post.category]}
+            {t(CATEGORY_KEY[post.category])}
           </span>
           <h1 className="mt-4 text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
             {post.title}
@@ -75,8 +71,7 @@ export default async function BlogPostPage({
               <i className="fa-solid fa-calendar text-xs" /> {post.date}
             </span>
             <span className="flex items-center gap-1">
-              <i className="fa-solid fa-clock text-xs" /> {post.readMin} min de
-              lectura
+              <i className="fa-solid fa-clock text-xs" /> {post.readMin} {t("minRead")}
             </span>
           </div>
         </div>
@@ -118,13 +113,13 @@ export default async function BlogPostPage({
           <aside className="space-y-6">
             <div className="rounded-box bg-secondary p-6 text-secondary-content">
               <span className="text-xs font-semibold uppercase tracking-wider text-primary-content/80">
-                Curso relacionado
+                {t("relatedCourse")}
               </span>
               <h3 className="mt-2 text-base font-bold">
-                Español Clínico Aplicado para Psicoterapeutas
+                {t("relatedCourseTitle")}
               </h3>
               <p className="mb-5 mt-2 text-xs text-secondary-content/70">
-                Domina la terminología y la comunicación clínica en español.
+                {t("relatedCourseDesc")}
               </p>
               <Link
                 href="/cursos/espanol-clinico"
@@ -136,7 +131,7 @@ export default async function BlogPostPage({
 
             <div className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
               <h3 className="mb-4 text-sm font-bold text-secondary">
-                Artículos relacionados
+                {t("relatedArticles")}
               </h3>
               <div className="space-y-4">
                 {related.map((r) => (
@@ -156,7 +151,7 @@ export default async function BlogPostPage({
                         {r.title}
                       </p>
                       <p className="mt-1 text-xs text-base-content/40">
-                        {r.readMin} min
+                        {r.readMin} {t("minRead")}
                       </p>
                     </div>
                   </Link>
@@ -168,7 +163,7 @@ export default async function BlogPostPage({
 
         <div className="mt-10 text-center">
           <Link href="/blog" className="btn btn-ghost btn-sm">
-            <i className="fa-solid fa-arrow-left" /> Volver al blog
+            <i className="fa-solid fa-arrow-left" /> {t("backToBlog")}
           </Link>
         </div>
       </section>

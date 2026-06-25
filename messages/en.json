@@ -177,6 +177,13 @@
     "newsletterDesc": "Clinical insights, resources and news from Centro Yolitia straight to your inbox.",
     "newsletterPlaceholder": "Your email address",
     "newsletterBtn": "Subscribe",
-    "newsletterPrivacy": "No spam. Unsubscribe anytime."
+    "newsletterPrivacy": "No spam. Unsubscribe anytime.",
+    "breadcrumbHome": "Home",
+    "relatedCourse": "Related course",
+    "relatedCourseTitle": "Applied Clinical Spanish for Psychotherapists",
+    "relatedCourseDesc": "Master clinical terminology and communication in Spanish.",
+    "relatedArticles": "Related articles",
+    "backToBlog": "Back to blog",
+    "minRead": "min read"
   }
 }
