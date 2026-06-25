@@ -34,9 +34,9 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-base-200">
+    <div className="flex h-screen overflow-hidden bg-base-200">
       {/* Sidebar desktop */}
-      <aside className="hidden w-64 flex-col border-r border-base-300 bg-base-100 md:flex">
+      <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-base-300 bg-base-100 md:flex">
         <Link href="/" className="flex items-center border-b border-base-300 p-5">
           <Logo className="h-9" />
         </Link>
@@ -73,9 +73,9 @@ export default async function AppLayout({
         </div>
       </aside>
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Top bar móvil */}
-        <header className="flex items-center justify-between border-b border-base-300 bg-base-100 px-4 py-3 md:hidden">
+        <header className="flex flex-shrink-0 items-center justify-between border-b border-base-300 bg-base-100 px-4 py-3 md:hidden">
           <Link href="/" className="flex items-center">
             <Logo className="h-7" />
           </Link>
@@ -105,7 +105,7 @@ export default async function AppLayout({
           </div>
         </header>
 
-        <main className="flex-1 p-6 md:p-10">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 md:p-10">{children}</main>
       </div>
     </div>
   );
