@@ -20,6 +20,50 @@ export async function updateProfileAction(formData: FormData) {
   redirect("/cuenta?msg=Perfil+actualizado+correctamente");
 }
 
+export async function updateAvatarAction(formData: FormData) {
+  const user = await requireUser();
+  const supabase = await createClient();
+
+  const file = formData.get("avatar") as File | null;
+  if (!file || file.size === 0)
+    redirect("/cuenta?error=Selecciona+una+imagen");
+  if (file.size > 5 * 1024 * 1024)
+    redirect("/cuenta?error=La+imagen+no+puede+superar+5+MB");
+
+  const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  if (!allowed.includes(file.type))
+    redirect("/cuenta?error=Formato+no+soportado.+Usa+JPG%2C+PNG+o+WebP");
+
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const path = `${user.id}/avatar.${ext}`;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, buffer, { contentType: file.type, upsert: true });
+
+  if (uploadError)
+    redirect(`/cuenta?error=${encodeURIComponent(uploadError.message)}`);
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("avatars").getPublicUrl(path);
+
+  // Cache-bust para forzar recarga inmediata
+  const avatarUrl = `${publicUrl}?v=${Date.now()}`;
+
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ avatar_url: avatarUrl })
+    .eq("id", user.id);
+
+  if (updateError)
+    redirect(`/cuenta?error=${encodeURIComponent(updateError.message)}`);
+
+  redirect("/cuenta?msg=Foto+de+perfil+actualizada");
+}
+
 export async function updateEmailAction(formData: FormData) {
   await requireUser();
   const supabase = await createClient();

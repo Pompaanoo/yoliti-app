@@ -6,6 +6,7 @@ import {
   updateEmailAction,
   requestPasswordResetAction,
 } from "./actions";
+import { AvatarUploadForm } from "./_components/AvatarUploadForm";
 
 export const metadata = { title: "Mi cuenta — Yoliti Academy" };
 
@@ -51,6 +52,22 @@ export default async function CuentaPage({
         </div>
       )}
 
+      {/* Foto de perfil */}
+      <section className="rounded-box border border-base-300 bg-base-100 shadow-sm">
+        <div className="border-b border-base-300 px-6 py-4">
+          <h2 className="font-bold text-secondary">Foto de perfil</h2>
+          <p className="mt-0.5 text-xs text-base-content/50">
+            Visible para otros usuarios de la plataforma.
+          </p>
+        </div>
+        <div className="p-6">
+          <AvatarUploadForm
+            currentUrl={profile?.avatar_url ?? null}
+            initial={initial}
+          />
+        </div>
+      </section>
+
       {/* Información personal */}
       <section className="rounded-box border border-base-300 bg-base-100 shadow-sm">
         <div className="border-b border-base-300 px-6 py-4">
@@ -60,22 +77,17 @@ export default async function CuentaPage({
           </p>
         </div>
         <form action={updateProfileAction} className="space-y-4 p-6">
-          <div className="flex items-center gap-4">
-            <span className="grid h-16 w-16 flex-shrink-0 place-items-center rounded-full bg-secondary text-secondary-content text-2xl font-bold">
-              {initial}
-            </span>
-            <div className="flex-1">
-              <label className="label label-text pb-1 text-xs font-medium">
-                Nombre completo
-              </label>
-              <input
-                name="full_name"
-                type="text"
-                className="input input-bordered w-full"
-                defaultValue={profile?.full_name ?? ""}
-                placeholder="Tu nombre completo"
-              />
-            </div>
+          <div>
+            <label className="label label-text pb-1 text-xs font-medium">
+              Nombre completo
+            </label>
+            <input
+              name="full_name"
+              type="text"
+              className="input input-bordered w-full"
+              defaultValue={profile?.full_name ?? ""}
+              placeholder="Tu nombre completo"
+            />
           </div>
           <div className="flex justify-end">
             <button type="submit" className="btn btn-primary btn-sm">

@@ -56,9 +56,17 @@ export default async function AppLayout({
         </nav>
         <div className="border-t border-base-300 p-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-secondary-content text-sm font-bold">
-              {(profile.full_name || "U").charAt(0).toUpperCase()}
-            </span>
+            {profile.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt={profile.full_name ?? "Avatar"}
+                className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-full bg-secondary text-secondary-content text-sm font-bold">
+                {(profile.full_name || "U").charAt(0).toUpperCase()}
+              </span>
+            )}
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">
                 {profile.full_name || "Usuario"}
