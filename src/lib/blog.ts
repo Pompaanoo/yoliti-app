@@ -1,19 +1,18 @@
-// Contenido del blog migrado del sitio original de Yoliti.
-// El cuerpo de cada artículo es HTML confiable (propio) que se
-// renderiza dentro de un contenedor .article-body (ver globals.css).
-
 export type BlogCategory = "practice" | "self" | "trauma";
 
 export interface BlogPost {
   slug: string;
   title: string;
+  titleEs?: string;
   category: BlogCategory;
   image: string;
   excerpt: string;
+  excerptEs?: string;
   date: string;
   readMin: number;
   featured?: boolean;
   content: string;
+  contentEs?: string;
 }
 
 export const CATEGORY_LABEL: Record<BlogCategory, string> = {
@@ -28,7 +27,6 @@ export const CATEGORY_BADGE: Record<BlogCategory, string> = {
   trauma: "bg-neutral/10 text-neutral",
 };
 
-// Clave de traducción (namespace "blog") por categoría.
 export const CATEGORY_KEY: Record<BlogCategory, string> = {
   practice: "catPractice",
   self: "catSelf",
@@ -38,19 +36,35 @@ export const CATEGORY_KEY: Record<BlogCategory, string> = {
 export const AUTHOR = {
   name: "Yoliti Osorio, PhD",
   role: "Directora académica · Psicóloga clínica",
+  roleEn: "Academic Director · Clinical Psychologist",
   initials: "YO",
   bio: "Doctora en Psicología Clínica con más de 20 años trabajando con comunidades latinas en Estados Unidos. Fundadora de Yoliti Academy y supervisora clínica certificada.",
+  bioEn: "Clinical Psychology PhD with over 20 years working with Latino communities in the United States. Founder of Yoliti Academy and certified clinical supervisor.",
 };
+
+/** Returns the post with title/excerpt/content in the requested locale. */
+export function localizePost(post: BlogPost, locale: string): BlogPost {
+  if (locale !== "es") return post;
+  return {
+    ...post,
+    title: post.titleEs ?? post.title,
+    excerpt: post.excerptEs ?? post.excerpt,
+    content: post.contentEs ?? post.content,
+  };
+}
 
 export const POSTS: BlogPost[] = [
   {
     slug: "understanding-emotional-triggers",
     title: "Understanding Emotional Triggers: Why We React the Way We Do",
+    titleEs: "Gatillos Emocionales: Por Qué Reaccionamos Como Reaccionamos",
     category: "self",
     image:
       "https://yolitiacademy.com/wp-content/uploads/2026/03/pexels-photo-745045-745045-scaled.jpg",
     excerpt:
       "Learn what emotional triggers are, why they happen, and how greater awareness can help you respond with more clarity and intention.",
+    excerptEs:
+      "Aprende qué son los gatillos emocionales, por qué ocurren y cómo una mayor autoconciencia puede ayudarte a responder con más claridad e intención.",
     date: "17 abr 2024",
     readMin: 5,
     featured: true,
@@ -88,15 +102,52 @@ export const POSTS: BlogPost[] = [
       <h2>Conclusion</h2>
       <p>Emotional triggers are not signs of weakness — they are signals from our nervous system, shaped by our history. By learning to recognize and work with our triggers, we expand our capacity to respond rather than react, to choose rather than be driven. This is the heart of emotional intelligence, and it begins with curiosity and compassion toward ourselves.</p>
     `,
+    contentEs: `
+      <p>Los gatillos emocionales son estímulos — una palabra, un tono de voz, un recuerdo, una situación — que activan una respuesta emocional fuerte, a menudo desproporcionada. Comprender por qué reaccionamos como reaccionamos es uno de los pasos más poderosos hacia la inteligencia emocional y el bienestar psicológico.</p>
+      <h2>¿Qué Es un Gatillo Emocional?</h2>
+      <p>Un gatillo emocional es cualquier cosa que provoca una reacción emocional intensa, a menudo enraizada en experiencias pasadas. Cuando algo en el presente le recuerda a nuestro sistema nervioso una amenaza, pérdida o necesidad insatisfecha del pasado, el cerebro responde como si ese evento original estuviera ocurriendo de nuevo, incluso cuando no es así.</p>
+      <p>Estas reacciones pueden ir desde una leve irritabilidad hasta una inundación emocional total. Lo que hace a los gatillos tan desafiantes es que a menudo operan por debajo de la conciencia, secuestrando nuestras respuestas antes de que tengamos la oportunidad de pensar.</p>
+      <blockquote>"Entre el estímulo y la respuesta hay un espacio. En ese espacio reside nuestro poder de elegir nuestra respuesta." — Viktor Frankl</blockquote>
+      <h2>La Neurociencia Detrás de los Gatillos</h2>
+      <p>A nivel biológico, los gatillos emocionales activan la amígdala — el centro de detección de amenazas del cerebro. Cuando la amígdala percibe peligro (real o simbólico), inicia una respuesta de lucha, huida o parálisis, inundando el cuerpo con hormonas del estrés antes de que la corteza prefrontal — responsable del pensamiento racional — tenga tiempo de procesar lo que está ocurriendo.</p>
+      <p>Esto explica por qué las reacciones desencadenadas a menudo se sienten automáticas y fuera de control. Son, en un sentido neurológico, respuestas de supervivencia. El reto es aprender a reconocerlas y crear una pausa suficiente para responder intencionalmente.</p>
+      <h2>Orígenes Comunes de los Gatillos Emocionales</h2>
+      <p>Los gatillos suelen estar enraizados en uno o más de los siguientes:</p>
+      <ul>
+        <li><strong>Experiencias de la infancia</strong> — mensajes tempranos sobre seguridad, amor o valor que se codificaron como patrones emocionales</li>
+        <li><strong>Eventos traumáticos</strong> — experiencias que sobrepasaron nuestra capacidad de procesar en el momento en que ocurrieron</li>
+        <li><strong>Necesidades insatisfechas</strong> — sentimientos recurrentes de no ser visto, escuchado, valorado o respetado</li>
+        <li><strong>Creencias centrales</strong> — suposiciones profundas sobre nosotros mismos y los demás que filtran cómo interpretamos las experiencias</li>
+      </ul>
+      <h2>Reconociendo Tus Propios Gatillos</h2>
+      <p>El primer paso para manejar los gatillos emocionales es tomar conciencia de ellos. Esto requiere desarrollar lo que los psicólogos llaman <em>conciencia interoceptiva</em> — la capacidad de notar sensaciones físicas en el cuerpo que señalan que una respuesta emocional está tomando forma.</p>
+      <p>Señales físicas comunes de ser activado incluyen: un corazón acelerado, tensión en el pecho o la garganta, respiración superficial, un impulso repentino de retirarse o atacar, o una sensación de disociación o irrealidad.</p>
+      <h3>Un Ejercicio Práctico: La Técnica PARA</h3>
+      <p>Cuando notes estas señales físicas, prueba la técnica PARA:</p>
+      <ul>
+        <li><strong>P</strong> — Para lo que estás haciendo</li>
+        <li><strong>A</strong> — Aspira profundo</li>
+        <li><strong>R</strong> — Reconoce lo que estás sintiendo sin juicio</li>
+        <li><strong>A</strong> — Actúa con intención en lugar de reacción</li>
+      </ul>
+      <h2>Por Qué Esto Importa para los Profesionales de Salud Mental</h2>
+      <p>Para terapeutas y clínicos, comprender los propios gatillos emocionales no es solo una práctica de autocuidado — es una responsabilidad ética. Los gatillos no examinados pueden llevar a reacciones de contratransferencia que comprometen la efectividad terapéutica y la seguridad del cliente.</p>
+      <p>En contextos culturales y bilingües, los gatillos también pueden estar moldeados por experiencias de migración, discriminación o trauma intergeneracional. Reconocer cómo estas dinámicas viven en el cuerpo — tanto en el clínico como en el cliente — es esencial para la atención culturalmente responsiva.</p>
+      <h2>Conclusión</h2>
+      <p>Los gatillos emocionales no son señales de debilidad — son señales de nuestro sistema nervioso, moldeadas por nuestra historia. Al aprender a reconocer y trabajar con nuestros gatillos, expandimos nuestra capacidad de responder en lugar de reaccionar, de elegir en lugar de ser impulsados. Este es el corazón de la inteligencia emocional, y comienza con curiosidad y compasión hacia nosotros mismos.</p>
+    `,
   },
   {
     slug: "signs-emotionally-overloaded",
     title: "Signs You May Be Emotionally Overloaded and How to Respond",
+    titleEs: "Señales de Que Puedes Estar Emocionalmente Sobrecargado y Cómo Responder",
     category: "self",
     image:
       "https://yolitiacademy.com/wp-content/uploads/2026/03/pexels-photo-6532531-6532531-scaled.jpg",
     excerpt:
       "Emotional overload can affect the way we think, feel, and respond to everyday life. Learn how to recognize the signs and respond with care.",
+    excerptEs:
+      "La sobrecarga emocional puede afectar la forma en que pensamos, sentimos y respondemos a la vida cotidiana. Aprende a reconocer las señales y a responder con cuidado.",
     date: "17 abr 2024",
     readMin: 7,
     content: `
@@ -151,15 +202,70 @@ export const POSTS: BlogPost[] = [
       <h2>Conclusion</h2>
       <p>Emotional overload is not a character flaw — it is a signal worth listening to. When we learn to recognize the signs early and respond with self-compassion rather than self-criticism, we build the internal capacity to care for ourselves and those we serve more sustainably. Your emotional wellbeing matters — not just for you, but for everyone your life touches.</p>
     `,
+    contentEs: `
+      <p>La sobrecarga emocional puede afectar la forma en que pensamos, sentimos y respondemos a la vida cotidiana. En un mundo que exige conectividad y rendimiento constantes, muchas personas — incluidos los profesionales de salud mental — se encuentran operando más allá de su capacidad emocional sin darse cuenta. Aprender a reconocer las primeras señales es el primer paso para restaurar el equilibrio.</p>
+      <h2>¿Qué Es la Sobrecarga Emocional?</h2>
+      <p>La sobrecarga emocional ocurre cuando el volumen o la intensidad de las demandas emocionales supera nuestra capacidad actual para procesarlas y regularlas. No es simplemente sentirse "estresado" — es un estado en el que nuestros recursos internos están agotados y nuestra capacidad para funcionar efectivamente está comprometida.</p>
+      <p>A diferencia del estrés agudo, la sobrecarga emocional a menudo se desarrolla gradualmente. Puede crecer durante semanas o meses de demandas acumuladas — relacionales, profesionales o personales — hasta que el sistema alcanza un punto de quiebre.</p>
+      <blockquote>"El agotamiento emocional es la señal del cuerpo de que algo importante ha sido ignorado por demasiado tiempo."</blockquote>
+      <h2>Señales de Alerta a Observar</h2>
+      <p>Reconocer las señales a tiempo nos permite responder con cuidado en lugar de en crisis. Las señales comunes incluyen:</p>
+      <h3>Señales Cognitivas</h3>
+      <ul>
+        <li>Dificultad para concentrarse o tomar decisiones</li>
+        <li>Pensamientos acelerados o incapacidad para "desconectarse" mentalmente</li>
+        <li>Olvidar cosas que normalmente recuerdas con facilidad</li>
+        <li>Sentirse mentalmente nublado o desconectado de la realidad</li>
+      </ul>
+      <h3>Señales Emocionales</h3>
+      <ul>
+        <li>Sentirse irritable, de mal humor o emocionalmente reactivo ante pequeñas cosas</li>
+        <li>Tristeza persistente, entumecimiento o aplanamiento emocional</li>
+        <li>Sentirse abrumado por situaciones que normalmente serían manejables</li>
+        <li>Una sensación de impotencia o pérdida de sentido</li>
+      </ul>
+      <h3>Señales Físicas</h3>
+      <ul>
+        <li>Sueño perturbado — dificultad para conciliar el sueño, mantenerlo o despertar descansado</li>
+        <li>Fatiga crónica que el descanso no parece resolver</li>
+        <li>Dolores de cabeza, problemas digestivos o tensión muscular sin causa médica clara</li>
+        <li>Una respuesta inmunológica reducida — enfermarse con más frecuencia</li>
+      </ul>
+      <h3>Señales Conductuales</h3>
+      <ul>
+        <li>Alejarse de relaciones o actividades que normalmente disfrutas</li>
+        <li>Mayor uso de comida, alcohol, pantallas u otros comportamientos de adormecimiento</li>
+        <li>Dificultad para estar presente en conversaciones o interacciones</li>
+        <li>Procrastinar en tareas importantes o sentirse paralizado sobre qué hacer a continuación</li>
+      </ul>
+      <h2>Cómo Responder Cuando Notas Estas Señales</h2>
+      <p>Lo más importante cuando reconoces la sobrecarga emocional no es seguir adelante — es desacelerar. Aquí hay estrategias basadas en evidencia:</p>
+      <h3>1. Nombra Lo Que Estás Experimentando</h3>
+      <p>La investigación del neurocientífico Matthew Lieberman muestra que simplemente etiquetar una emoción — "Estoy abrumado", "Me siento agotado" — activa la corteza prefrontal y reduce la reactividad de la amígdala. Nombrar tu estado no es debilidad; es el comienzo de la regulación.</p>
+      <h3>2. Reduce la Entrada Antes de Añadir Salida</h3>
+      <p>Cuando están sobrecargadas, muchas personas intentan salir a través de la resolución — más planificación, más esfuerzo. En cambio, comienza reduciendo las demandas: apaga las notificaciones, cancela un compromiso no esencial, date permiso para descansar.</p>
+      <h3>3. Reconéctate con el Cuerpo</h3>
+      <p>Las prácticas somáticas como la respiración diafragmática lenta, la relajación muscular progresiva o el movimiento suave ayudan a descargar las hormonas del estrés y llevan el sistema nervioso de vuelta hacia la regulación. Incluso cinco minutos de respiración intencional pueden cambiar tu estado fisiológico de manera significativa.</p>
+      <h3>4. Busca Conexión — No Te Aísles</h3>
+      <p>La sobrecarga emocional a menudo nos empuja hacia el aislamiento precisamente en el momento en que la conexión es más sanadora. Comunícate con una persona de confianza, un terapeuta o un grupo de apoyo. La corregulación social es una de las herramientas más poderosas para la recuperación emocional.</p>
+      <h2>Una Nota Especial para Clínicos</h2>
+      <p>Los profesionales de salud mental son particularmente vulnerables a la sobrecarga emocional debido al peso acumulado del trauma vicario, la fatiga por compasión y las demandas relacionales del trabajo clínico. Reconocer la sobrecarga en ti mismo no es una señal de inadecuación — es una señal de que eres humano y que te importa.</p>
+      <p>La supervisión regular, la consulta entre pares y la terapia personal no son lujos para los clínicos — son necesidades profesionales. Modelar el autocuidado también es una de las cosas más poderosas que un terapeuta puede hacer por sus clientes.</p>
+      <h2>Conclusión</h2>
+      <p>La sobrecarga emocional no es un defecto de carácter — es una señal que merece ser escuchada. Cuando aprendemos a reconocer las señales temprano y a responder con autocompasión en lugar de autocrítica, construimos la capacidad interna para cuidarnos a nosotros mismos y a quienes servimos de manera más sostenible.</p>
+    `,
   },
   {
     slug: "trauma-informed-learning",
     title: "Why Trauma-Informed Learning Matters in Mental Health Education",
+    titleEs: "Por Qué el Aprendizaje Informado por el Trauma Importa en la Educación en Salud Mental",
     category: "trauma",
     image:
       "https://yolitiacademy.com/wp-content/uploads/2026/03/pexels-photo-6683491-6683491-scaled.jpg",
     excerpt:
       "Trauma-informed learning helps create safer, more supportive educational environments that make learning more meaningful and durable.",
+    excerptEs:
+      "El aprendizaje informado por el trauma ayuda a crear entornos educativos más seguros y de apoyo, haciendo que el aprendizaje sea más significativo y duradero.",
     date: "17 abr 2024",
     readMin: 6,
     content: `
@@ -195,15 +301,50 @@ export const POSTS: BlogPost[] = [
       <h2>Conclusion</h2>
       <p>Trauma-informed learning is not a soft addition to mental health education — it is a structural necessity. When we design training environments that recognize and respond to the whole person of the learner, we produce clinicians who are more self-aware, more resilient, and more capable of the deeply relational work that effective therapy requires. The quality of mental health care begins in how we train the people who provide it.</p>
     `,
+    contentEs: `
+      <p>El trauma no es una experiencia rara o excepcional — está tejido en la vida de muchas personas. Para los estudiantes y practicantes en el campo de la salud mental, esta realidad plantea una pregunta importante: ¿nuestro enfoque educativo tiene en cuenta el hecho de que los propios aprendices pueden cargar con trauma no resuelto? El aprendizaje informado por el trauma ofrece un marco para decir que sí.</p>
+      <h2>¿Qué Es el Aprendizaje Informado por el Trauma?</h2>
+      <p>El aprendizaje informado por el trauma aplica los principios de la atención informada por el trauma — seguridad, confiabilidad, elección, colaboración y empoderamiento — al propio entorno educativo. En lugar de tratar el aula o el programa de formación como un espacio neutral, reconoce que el aprendizaje puede verse perturbado, complicado o incluso retraumatizante cuando el contexto emocional no se tiene en cuenta.</p>
+      <p>Este enfoque no requiere que los educadores se conviertan en terapeutas. Más bien, les pide que diseñen experiencias de aprendizaje que sean sensibles a la presencia del trauma, reduzcan el estrés innecesario y construyan las condiciones en las que puede tener lugar un aprendizaje más profundo.</p>
+      <blockquote>"No puedes enseñar a un sistema nervioso traumatizado — primero debes ayudarlo a sentirse lo suficientemente seguro para aprender."</blockquote>
+      <h2>Por Qué Importa Específicamente en la Educación en Salud Mental</h2>
+      <p>Los estudiantes que ingresan al campo de la salud mental a menudo lo hacen debido a experiencias personales con el sufrimiento, la pérdida o el deseo de entenderse mejor a sí mismos y a los demás. La investigación muestra consistentemente que una proporción significativa de los formandos en salud mental tienen historias personales de trauma, depresión o ansiedad.</p>
+      <p>Cuando los programas de formación ignoran esta realidad, surgen varios problemas:</p>
+      <ul>
+        <li>La traumatización vicaria puede quedar sin abordar, acumulándose hasta afectar el rendimiento clínico y el bienestar</li>
+        <li>Los estudiantes pueden sentir vergüenza de sus propias luchas, reforzando el estigma que están entrenando para desmantelar</li>
+        <li>Aprender sobre trauma sin apoyo adecuado puede activar material personal que interfiere con la integración</li>
+        <li>Los formandos que nunca experimentan la atención informada por el trauma de primera mano están menos equipados para ofrecerla a sus clientes</li>
+      </ul>
+      <h2>Los Seis Principios Centrales en un Contexto Educativo</h2>
+      <h3>1. Seguridad</h3>
+      <p>Los aprendices deben sentirse física y emocionalmente seguros para participar plenamente. Esto significa crear estructuras predecibles, expectativas claras y entornos donde los errores se traten como oportunidades de aprendizaje en lugar de fuentes de vergüenza.</p>
+      <h3>2. Confiabilidad y Transparencia</h3>
+      <p>Los instructores y programas que comunican claramente — sobre objetivos, expectativas y procesos — construyen la confianza necesaria para un aprendizaje más profundo. Las agendas ocultas y los criterios de evaluación poco claros socavan el sentido de seguridad que el aprendizaje requiere.</p>
+      <h3>3. Apoyo entre Pares</h3>
+      <p>Los modelos de cohorte, los grupos de consulta entre pares y las prácticas de reflexión estructurada construyen las conexiones relacionales que amortiguan los efectos aislantes del material difícil. Saber que otros comparten tu experiencia reduce la vergüenza y construye resiliencia.</p>
+      <h3>4. Colaboración y Mutualidad</h3>
+      <p>El aprendizaje informado por el trauma aplana las jerarquías de poder innecesarias. Cuando los educadores modelan la humildad, reconocen los límites de su conocimiento y genuinamente valoran las contribuciones de los estudiantes, crean las condiciones para un compromiso honesto.</p>
+      <h3>5. Empoderamiento y Elección</h3>
+      <p>Ofrecer a los aprendices opciones significativas — en cómo participan, cómo demuestran el aprendizaje, cómo marcan el ritmo de su exposición al contenido difícil — honra su agencia y reduce la impotencia que el trauma tan a menudo produce.</p>
+      <h3>6. Cuestiones Culturales, Históricas y de Género</h3>
+      <p>El trauma no existe fuera de su contexto. Un enfoque educativo informado por el trauma reconoce cómo las fuerzas sistémicas — el racismo, el colonialismo, la violencia de género, la migración — dan forma a las experiencias traumáticas de los aprendices y las poblaciones que servirán.</p>
+      <h2>Implicaciones para la Formación Bilingüe y Multicultural</h2>
+      <p>Para los clínicos que se preparan para trabajar con comunidades hispanohablantes y latinas, el aprendizaje informado por el trauma tiene un peso específico. Muchos clientes en estas comunidades cargan con trauma intergeneracional moldeado por la migración, la violencia política, la discriminación y el estrés de aculturación. Los clínicos formados en entornos informados por el trauma están mejor equipados para crear el tipo de seguridad terapéutica que estos clientes necesitan.</p>
+      <h2>Conclusión</h2>
+      <p>El aprendizaje informado por el trauma no es un añadido opcional a la educación en salud mental — es una necesidad estructural. Cuando diseñamos entornos de formación que reconocen y responden a la persona completa del aprendiz, producimos clínicos que son más conscientes de sí mismos, más resilientes y más capaces del trabajo profundamente relacional que requiere la terapia efectiva. La calidad de la atención en salud mental comienza en cómo formamos a las personas que la brindan.</p>
+    `,
   },
   {
     slug: "5-ways-online-training",
-    title:
-      "5 Ways Online Psychology Training Can Strengthen Your Professional Practice",
+    title: "5 Ways Online Psychology Training Can Strengthen Your Professional Practice",
+    titleEs: "5 Formas en Que la Formación en Psicología en Línea Puede Fortalecer Tu Práctica Profesional",
     category: "practice",
     image: "https://yolitiacademy.com/wp-content/uploads/2024/04/Post-3.jpg",
     excerpt:
       "Online psychology training can help students and professionals keep growing with more flexibility, accessibility, and real-world relevance.",
+    excerptEs:
+      "La formación en psicología en línea puede ayudar a estudiantes y profesionales a seguir creciendo con mayor flexibilidad, accesibilidad y relevancia práctica.",
     date: "17 abr 2024",
     readMin: 9,
     content: `
@@ -248,15 +389,60 @@ export const POSTS: BlogPost[] = [
       <h2>Conclusion</h2>
       <p>Online psychology training, when designed thoughtfully, is not a compromise — it is an opportunity. The flexibility, accessibility, and depth of specialized content available online make it one of the most powerful tools in a clinician's ongoing development. The question is not whether to learn online, but how to choose the training that will most meaningfully advance your work with the clients who trust you with their care.</p>
     `,
+    contentEs: `
+      <p>El panorama del desarrollo profesional ha cambiado drásticamente. La formación en psicología en línea ya no es una opción de segunda clase — para muchos clínicos, se ha convertido en la forma más efectiva, flexible y relevante de hacer crecer sus habilidades. Aquí hay cinco formas concretas en que puede fortalecer tu práctica.</p>
+      <h2>1. Aprendizaje Flexible que se Adapta al Horario de un Clínico</h2>
+      <p>El trabajo clínico es exigente. Entre las sesiones, la documentación, la supervisión y el autocuidado, encontrar tiempo para la formación continua puede sentirse imposible. Las plataformas en línea eliminan las barreras logísticas — sin desplazamientos, sin horario fijo, sin sesiones perdidas porque un cliente se extendió.</p>
+      <p>La capacidad de aprender a tu propio ritmo es particularmente valiosa para el tipo de aprendizaje profundo e integrador que requiere el desarrollo profesional. Puedes pausar, volver a ver y revisar el material hasta que genuinamente conecte con tu experiencia clínica — algo que un taller de un día raramente permite.</p>
+      <blockquote>"La mejor educación continua no interrumpe la práctica. La profundiza."</blockquote>
+      <h2>2. Acceso a Contenido Especializado que No Encuentras Localmente</h2>
+      <p>Una de las ventajas más significativas de la formación en línea es el acceso a experiencia especializada que puede no existir en tu área geográfica. Para los clínicos bilingües y multiculturales, esto es especialmente significativo.</p>
+      <p>La formación en áreas como vocabulario clínico en español, formulación cultural, atención informada por el trauma para poblaciones inmigrantes, o supervisión clínica en contextos lingüísticos simplemente no está disponible en la mayoría de los mercados locales. Las plataformas en línea hacen que este conocimiento especializado sea accesible sin importar dónde practiques.</p>
+      <ul>
+        <li>Cursos acreditados por CEUs en áreas clínicas especializadas</li>
+        <li>Formación por instructores con experiencia vivida y clínica en tu población objetivo</li>
+        <li>Contenido desarrollado específicamente para profesionales biculturales y bilingües</li>
+      </ul>
+      <h2>3. Aplicación Inmediata a Casos Reales</h2>
+      <p>La formación profesional más efectiva crea un ciclo de retroalimentación estrecho entre el aprendizaje y la práctica. Cuando completas un módulo el miércoles por la tarde y ves a un cliente relevante el jueves por la mañana, el aprendizaje tiene aplicación clínica inmediata.</p>
+      <p>Esta proximidad entre la formación y la práctica acelera la integración de formas que una conferencia asistida hace meses raramente puede lograr. Las habilidades aprendidas en contexto — y aplicadas inmediatamente — se convierten en parte de tu instinto clínico más rápido y de manera más duradera.</p>
+      <h2>4. Construyendo un Marco para la Práctica Reflexiva</h2>
+      <p>La formación en línea de calidad no solo ofrece información — hace preguntas. ¿Qué notaste en ti mismo? ¿Cómo se conecta esto con los casos que estás llevando actualmente? ¿Qué suposiciones estás trayendo a este material?</p>
+      <p>Esta estructura reflexiva construye los hábitos metacognitivos que distinguen a los excelentes clínicos de los competentes. Con el tiempo, la práctica de preguntar "¿por qué estoy respondiendo de esta manera?" se vuelve automática — en la formación y en la sala de sesiones.</p>
+      <h3>Preguntas de Reflexión que Fortalecen el Pensamiento Clínico</h3>
+      <ul>
+        <li>¿Qué suposiciones traía a la presentación de este cliente?</li>
+        <li>¿Dónde sentí el impulso de hacer algo diferente a lo que fui formado para hacer?</li>
+        <li>¿Qué factores culturales podrían estar dando forma a lo que interpreto como un síntoma clínico?</li>
+        <li>¿Qué diría mi supervisor sobre este caso?</li>
+      </ul>
+      <h2>5. Comunidad y Aprendizaje entre Pares a Través de Fronteras</h2>
+      <p>La formación en línea incluye cada vez más características comunitarias — foros de discusión, grupos de consulta entre pares, sesiones de preguntas y respuestas en vivo y aprendizaje basado en cohortes. Para muchos clínicos que practican en relativo aislamiento, esta conexión con una comunidad profesional es tan valiosa como el contenido en sí.</p>
+      <p>Aprender junto a compañeros que están navegando desafíos clínicos similares normaliza la dificultad, reduce la soledad profesional y te expone a perspectivas diversas que enriquecen tu propio pensamiento clínico.</p>
+      <h2>Qué Buscar en un Programa de Formación en Psicología en Línea</h2>
+      <p>No toda la formación en línea es igual. Al evaluar tus opciones, considera:</p>
+      <ul>
+        <li><strong>Acreditación:</strong> ¿Los CEUs son reconocidos por tu junta de licencias y organizaciones profesionales relevantes?</li>
+        <li><strong>Credenciales del instructor:</strong> ¿Los instructores tienen experiencia clínica y vivida con tu población objetivo?</li>
+        <li><strong>Profundidad del contenido:</strong> ¿La formación va más allá de la información para construir competencia genuina?</li>
+        <li><strong>Responsividad cultural:</strong> ¿El contenido es atento a las poblaciones que sirves?</li>
+        <li><strong>Comunidad:</strong> ¿La plataforma ofrece conexión entre pares y consulta, o solo consumo pasivo de contenido?</li>
+      </ul>
+      <h2>Conclusión</h2>
+      <p>La formación en psicología en línea, cuando está diseñada de manera reflexiva, no es un compromiso — es una oportunidad. La flexibilidad, la accesibilidad y la profundidad del contenido especializado disponible en línea la convierten en una de las herramientas más poderosas en el desarrollo continuo de un clínico. La pregunta no es si aprender en línea, sino cómo elegir la formación que más significativamente avanzará tu trabajo con los clientes que confían en ti su cuidado.</p>
+    `,
   },
   {
     slug: "role-of-self-awareness",
     title: "The Role of Self-Awareness in Becoming a Better Therapist",
+    titleEs: "El Papel de la Autoconciencia en Convertirse en un Mejor Terapeuta",
     category: "self",
     image:
       "https://yolitiacademy.com/wp-content/uploads/2026/03/pexels-photo-4101143-4101143-scaled.jpg",
     excerpt:
       "Self-awareness is a key part of effective therapeutic work. It helps therapists respond with greater clarity, presence, and ethical sensitivity.",
+    excerptEs:
+      "La autoconciencia es una parte clave del trabajo terapéutico efectivo. Ayuda a los terapeutas a responder con mayor claridad, presencia y sensibilidad ética.",
     date: "17 abr 2024",
     readMin: 7,
     content: `
@@ -294,15 +480,53 @@ export const POSTS: BlogPost[] = [
       <h2>Conclusion</h2>
       <p>Self-awareness is not a destination — it is a lifelong orientation. The therapists who serve their clients most effectively are not those who have resolved all their own struggles, but those who remain genuinely curious about themselves: their reactions, their assumptions, their growing edges. That ongoing curiosity, cultivated with care, is one of the most powerful therapeutic tools available.</p>
     `,
+    contentEs: `
+      <p>La autoconciencia se describe a menudo como la base de la terapia efectiva — y con razón. Lo que llevamos a la sala de terapia, nuestras suposiciones, nuestras reacciones, nuestras experiencias no resueltas, da forma a lo que vemos, lo que perdemos y cómo respondemos. Desarrollar un conocimiento más profundo de uno mismo no es simplemente enriquecimiento personal para los terapeutas. Es una responsabilidad clínica.</p>
+      <h2>¿Qué Es la Autoconciencia Clínica?</h2>
+      <p>La autoconciencia clínica es la práctica continua de examinar cómo tu propio mundo interior — tus emociones, creencias, trasfondo cultural, historia personal y sesgos — influye en tu trabajo terapéutico. Va más allá de la introspección para incluir conciencia de cómo te presentas en relación con los clientes: qué notas, qué evitas, cuándo te sientes cómodo y cuándo te sientes desestabilizado.</p>
+      <p>Este tipo de conciencia es dinámica. No es algo que logras una vez y llevas adelante sin cambios — requiere atención continua, especialmente cuando encuentras nuevas presentaciones de clientes, nuevas experiencias de vida y nuevos contextos culturales.</p>
+      <blockquote>"El terapeuta que no se conoce a sí mismo se arriesga a usar la terapia para resolver sus propios conflictos a expensas del cliente."</blockquote>
+      <h2>Por Qué la Autoconciencia Mejora los Resultados Clínicos</h2>
+      <p>La investigación sobre la autoconciencia del terapeuta la vincula consistentemente con mejores resultados clínicos. Esto es por qué:</p>
+      <h3>Reduce el Impacto de la Contratransferencia</h3>
+      <p>La contratransferencia — las reacciones emocionales que un terapeuta tiene hacia un cliente — es inevitable. Lo que importa es si el terapeuta puede notarla y usarla reflexivamente, en lugar de actuar sobre ella de manera irreflexiva. Un terapeuta autoconsciente puede preguntar: "¿Por qué me siento protector de este cliente?" o "¿Por qué tengo ganas de terminar esta sesión antes?" — y usar esas preguntas como datos clínicos.</p>
+      <h3>Expande el Rango del Terapeuta</h3>
+      <p>Los terapeutas que no son conscientes de sus propios gatillos y puntos ciegos reducen inconscientemente el espacio terapéutico — alejándose de temas que se sienten amenazantes, reaccionando exageradamente a comportamientos del cliente que resuenan con su propia historia, o empujando sutilmente a los clientes hacia conclusiones que alivian la incomodidad del propio terapeuta. Una mayor autoconciencia expande el rango de lo que puede sostenerse y explorarse en la sesión.</p>
+      <h3>Modela el Trabajo</h3>
+      <p>La terapia pide a los clientes que hagan algo profundamente difícil: mirarse a sí mismos y a sus patrones con honestidad. Los terapeutas que están comprometidos en ese mismo proceso — a través de terapia personal, supervisión y reflexión continua — aportan una credibilidad encarnada a esa invitación. Los clientes pueden sentir la diferencia.</p>
+      <h2>Autoconciencia en la Práctica Intercultural</h2>
+      <p>Para los clínicos que trabajan a través de diferencias culturales — particularmente con clientes latinos y hispanohablantes — la autoconciencia adquiere dimensiones adicionales. La humildad cultural requiere no solo conocer tu propio trasfondo cultural y valores, sino examinar activamente cómo crean expectativas, juicios y puntos ciegos en tu trabajo clínico.</p>
+      <p>Preguntas que vale la pena considerar regularmente incluyen:</p>
+      <ul>
+        <li>¿Qué me lleva a asumir mi trasfondo cultural sobre las relaciones familiares, la expresión emocional o la búsqueda de ayuda?</li>
+        <li>¿Cómo aparecen las dinámicas de poder relacionadas con la raza, el idioma o el estatus migratorio en mis relaciones terapéuticas?</li>
+        <li>¿Soy capaz de sostener espacio para cosmovisiones que difieren significativamente de la mía sin patologizarlas o minimizarlas?</li>
+        <li>¿Cómo afecta trabajar en un idioma no dominante a mi sentido de confianza clínica, y cómo afecta eso al cliente?</li>
+      </ul>
+      <h2>Formas Prácticas de Desarrollar la Autoconciencia como Clínico</h2>
+      <h3>Terapia Personal</h3>
+      <p>No hay sustituto para estar en la silla del cliente. La terapia personal — especialmente el trabajo profundo y continuo — desarrolla el tipo de autoconocimiento que la supervisión y la formación solas no pueden proporcionar. Muchos clínicos encuentran que la terapia personal sigue siendo una de sus fuentes más significativas de crecimiento profesional a lo largo de sus carreras.</p>
+      <h3>Supervisión Clínica</h3>
+      <p>La buena supervisión no es solo consulta de casos — es un proceso relacional que sostiene espacio para la experiencia interior del terapeuta. Un supervisor que pregunta "¿Qué notaste en ti mismo durante ese momento?" está ofreciendo algo más que retroalimentación sobre técnica.</p>
+      <h3>Escritura Reflexiva</h3>
+      <p>Mantener un diario clínico — no notas sobre los clientes, sino reflexiones sobre tus propias reacciones, preguntas y áreas de crecimiento — construye el hábito de la auto-observación. Incluso diez minutos de escritura después de una sesión difícil pueden revelar patrones que de otro modo permanecerían inconscientes.</p>
+      <h3>Consulta entre Pares</h3>
+      <p>La consulta regular con colegas de confianza crea las condiciones para la reflexión honesta. Cuando puedes decir "No sé qué pasó en esa sesión" o "Creo que cometí un error" en una relación profesional segura, creas el espacio para aprender de tu experiencia clínica en lugar de repetirla.</p>
+      <h2>Conclusión</h2>
+      <p>La autoconciencia no es un destino — es una orientación de por vida. Los terapeutas que sirven a sus clientes de manera más efectiva no son aquellos que han resuelto todas sus propias luchas, sino aquellos que permanecen genuinamente curiosos sobre sí mismos: sus reacciones, sus suposiciones, sus áreas de crecimiento. Esa curiosidad continua, cultivada con cuidado, es una de las herramientas terapéuticas más poderosas disponibles.</p>
+    `,
   },
   {
     slug: "beyond-theory-practical-application-psychology",
     title: "Beyond Theory: Why Practical Application Matters in Psychology",
+    titleEs: "Más Allá de la Teoría: Por Qué la Aplicación Práctica Importa en Psicología",
     category: "practice",
     image:
       "https://yolitiacademy.com/wp-content/uploads/2026/03/g7536e5a4a64d61ab09df94310d3f498198efb602383d436e341830015ebe18a8bf2f24429470c09b4a456922dc92b53cbe2846c22b61d48cc5884d06d251b59e_1280-5710156.jpg",
     excerpt:
       "Understanding psychology begins in the classroom — but real growth happens when we take that knowledge into actual human situations and learn to apply it with clarity and intention.",
+    excerptEs:
+      "Comprender la psicología comienza en el aula, pero el crecimiento real ocurre cuando llevamos ese conocimiento a situaciones humanas reales y aprendemos a aplicarlo con claridad e intención.",
     date: "25 jun 2026",
     readMin: 6,
     content: `
@@ -339,6 +563,41 @@ export const POSTS: BlogPost[] = [
       <h2>Beginning Where You Are</h2>
       <p>Wherever you are in your professional or personal journey, the shift from theoretical knowledge to genuine understanding begins with one practice: honest self-observation. Before you can truly understand another person's inner world, you need to become increasingly familiar with your own.</p>
       <p>This is not a process you complete — it is an orientation you cultivate over time. And it is precisely this orientation that makes the difference between a clinician who knows psychology and one who truly practices it.</p>
+    `,
+    contentEs: `
+      <p>Los gatillos emocionales son una parte natural de ser humano. Un tono de voz, un recuerdo, una conversación difícil, o incluso una pequeña situación inesperada pueden crear reacciones emocionales fuertes que parecen más grandes que el momento en sí. Para muchas personas, estas reacciones se sienten confusas, frustrantes o difíciles de controlar.</p>
+      <p>La verdad es que los gatillos emocionales no son aleatorios. A menudo están conectados con experiencias personales, emociones no resueltas, patrones aprendidos o situaciones que tocan algo importante dentro de nosotros. Comprenderlos es uno de los primeros pasos hacia el crecimiento emocional y relaciones más saludables.</p>
+      <h2>¿Qué Son los Gatillos Emocionales?</h2>
+      <p>Los gatillos emocionales son situaciones, palabras, conductas o entornos que activan una respuesta emocional fuerte. Pueden llevar a la ira, el miedo, la tristeza, la vergüenza, la ansiedad o la actitud defensiva. A veces la reacción se siente inmediata y la persona puede no entender completamente por qué ocurrió.</p>
+      <p>Los gatillos suelen estar ligados a experiencias pasadas. Cuando algo en el presente se asemeja a una experiencia dolorosa del pasado, la mente y el cuerpo pueden reaccionar como si la amenaza estuviera ocurriendo de nuevo.</p>
+      <h2>Por Qué la Salud Mental Importa en Ese Proceso</h2>
+      <p>La salud mental proporciona la base emocional para el crecimiento. Cuando una persona está abrumada por la ansiedad, el agotamiento emocional, el estrés crónico o el dolor no resuelto, se vuelve mucho más difícil concentrarse, reflexionar y avanzar con intención.</p>
+      <p>Esto no significa que el crecimiento sea imposible en tiempos difíciles. En muchos casos, los desafíos emocionales se convierten en el comienzo de la transformación. Sin embargo, el crecimiento sostenible es más probable cuando las personas también cuidan su bienestar mental y emocional.</p>
+      <h2>La Brecha Entre Saber y Comprender</h2>
+      <p>En la educación en psicología, los estudiantes aprenden sobre regulación emocional, teoría del apego, distorsiones cognitivas y respuestas al trauma. Estos marcos son valiosos — nos dan un lenguaje y un mapa. Pero un mapa no es el territorio.</p>
+      <p>La comprensión psicológica real requiere más que leer sobre cómo funcionan las emociones. Requiere encontrarse con esos conceptos en situaciones vividas — en conversaciones reales, en sesiones clínicas, en tu propia experiencia interior — y tener el valor de permanecer curioso incluso cuando se vuelve incómodo.</p>
+      <blockquote>"No puedes enseñar inteligencia emocional desde la distancia. Debe practicarse, encarnarse y vivirse."</blockquote>
+      <h2>Cómo Se Ve la Aplicación Práctica en Realidad</h2>
+      <p>La aplicación práctica en psicología no se trata solo de estudios de caso o juegos de roles. Se trata de desarrollar una cualidad particular de atención — una disposición a notar lo que realmente está ocurriendo en una relación o situación, en lugar de lo que la teoría predice que debería ocurrir.</p>
+      <p>Esto se parece a:</p>
+      <ul>
+        <li>Un terapeuta que nota su propia incomodidad durante una sesión y usa esa conciencia clínicamente</li>
+        <li>Un estudiante que reconoce un concepto de un libro de texto en una conversación real y elige responder de manera diferente</li>
+        <li>Un profesional que hace una pausa antes de reaccionar, preguntándose: <em>¿Qué está realmente ocurriendo aquí — en mí y en esta otra persona?</em></li>
+      </ul>
+      <h2>Por Qué la Educación Debe Cerrar Esa Brecha</h2>
+      <p>Los programas de psicología tradicionales a menudo priorizan la transmisión de conocimiento sobre la integración del conocimiento. El resultado son graduados que pueden definir un concepto con precisión pero luchan por aplicarlo cuando un cliente se sienta frente a ellos en crisis.</p>
+      <p>La educación que tiende un puente entre la teoría y la práctica está diseñada en torno a una pregunta diferente: <em>¿Cómo cambia esto realmente la forma en que veo, siento y respondo?</em> Ese cambio en la pregunta lo cambia todo sobre cómo se estructura el aprendizaje.</p>
+      <h3>Principios del Aprendizaje Fundamentado en la Práctica</h3>
+      <ul>
+        <li><strong>Reflexión antes de la aplicación</strong> — comprender tus propios patrones emocionales antes de trabajar con los de otros</li>
+        <li><strong>Aprendizaje situacional</strong> — encontrarse con conceptos dentro de contextos humanos reales o realistas</li>
+        <li><strong>Integración sobre información</strong> — volver al material múltiples veces a medida que tu experiencia se profundiza</li>
+        <li><strong>Auto-observación honesta</strong> — rastrear cómo cambian tus respuestas internas a medida que crece tu comprensión</li>
+      </ul>
+      <h2>Comenzando Donde Estás</h2>
+      <p>Donde sea que estés en tu viaje profesional o personal, el cambio del conocimiento teórico a la comprensión genuina comienza con una práctica: la auto-observación honesta. Antes de poder verdaderamente comprender el mundo interior de otra persona, necesitas familiarizarte cada vez más con el tuyo.</p>
+      <p>Este no es un proceso que completas — es una orientación que cultivas con el tiempo. Y es precisamente esta orientación la que marca la diferencia entre un clínico que conoce la psicología y uno que verdaderamente la practica.</p>
     `,
   },
 ];

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-import { POSTS, CATEGORY_BADGE, CATEGORY_KEY, type BlogCategory } from "@/lib/blog";
+import { getTranslations, getLocale } from "next-intl/server";
+import { POSTS, localizePost, CATEGORY_BADGE, CATEGORY_KEY, type BlogCategory } from "@/lib/blog";
 import BlogGrid, { type BlogCardData } from "@/components/BlogGrid";
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-  const t = await getTranslations("blog");
+  const [t, locale] = await Promise.all([getTranslations("blog"), getLocale()]);
 
   const catLabels: Record<BlogCategory, string> = {
     practice: t("catPractice"),
@@ -18,8 +18,9 @@ export default async function BlogPage() {
     trauma: t("catTrauma"),
   };
 
-  const featured = POSTS.find((p) => p.featured) ?? POSTS[0];
-  const cards: BlogCardData[] = POSTS.map(
+  const localizedPosts = POSTS.map((p) => localizePost(p, locale));
+  const featured = localizedPosts.find((p) => p.featured) ?? localizedPosts[0];
+  const cards: BlogCardData[] = localizedPosts.map(
     ({ slug, title, category, image, excerpt, date, readMin }) => ({
       slug,
       title,

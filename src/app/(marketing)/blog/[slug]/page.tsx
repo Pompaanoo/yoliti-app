@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { POSTS, getPost, AUTHOR, CATEGORY_BADGE, CATEGORY_KEY } from "@/lib/blog";
+import { getTranslations, getLocale } from "next-intl/server";
+import { POSTS, getPost, localizePost, AUTHOR, CATEGORY_BADGE, CATEGORY_KEY } from "@/lib/blog";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -26,11 +26,14 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
-  if (!post) notFound();
+  const rawPost = getPost(slug);
+  if (!rawPost) notFound();
 
-  const t = await getTranslations("blog");
-  const related = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const [t, locale] = await Promise.all([getTranslations("blog"), getLocale()]);
+  const post = localizePost(rawPost, locale);
+  const related = POSTS.map((p) => localizePost(p, locale)).filter((p) => p.slug !== post.slug).slice(0, 3);
+  const authorRole = locale === "es" ? AUTHOR.role : AUTHOR.roleEn;
+  const authorBio = locale === "es" ? AUTHOR.bio : AUTHOR.bioEn;
 
   return (
     <div className="bg-base-200">
@@ -63,7 +66,7 @@ export default async function BlogPostPage({
                 <p className="text-sm font-semibold text-secondary">
                   {AUTHOR.name}
                 </p>
-                <p className="text-xs text-base-content/40">{AUTHOR.role}</p>
+                <p className="text-xs text-base-content/40">{authorRole}</p>
               </div>
             </div>
             <span className="text-base-content/20">|</span>
@@ -102,9 +105,9 @@ export default async function BlogPostPage({
               <div>
                 <p className="font-bold text-secondary">{AUTHOR.name}</p>
                 <p className="mb-2 text-xs text-base-content/40">
-                  {AUTHOR.role}
+                  {authorRole}
                 </p>
-                <p className="text-sm text-base-content/60">{AUTHOR.bio}</p>
+                <p className="text-sm text-base-content/60">{authorBio}</p>
               </div>
             </div>
           </article>
