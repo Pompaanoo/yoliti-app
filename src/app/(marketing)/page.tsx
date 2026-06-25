@@ -311,7 +311,7 @@ export default async function HomePage() {
                     src={
                       i === 0
                         ? "https://placehold.co/300x320/0D5C6E/5ECFCA?text=GW"
-                        : "https://placehold.co/300x320/162E22/5ECFCA?text=CY"
+                        : "https://yolitiacademy.com/wp-content/uploads/2025/10/Diseno-sin-titulo-7-e1760799166305.png"
                     }
                     alt={mentor.name}
                     className="h-52 w-full object-cover"
