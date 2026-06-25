@@ -5,7 +5,7 @@ import CourseCard from "@/components/CourseCard";
 import { POSTS, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/blog";
 import type { Course } from "@/lib/types";
 
-const STAT_NUMBERS = ["0+", "0+", "0+", "1%"];
+const STAT_NUMBERS = ["15+", "10+", "20+", "100%"];
 
 const FEATURE_ICONS = [
   "fa-crosshairs",
