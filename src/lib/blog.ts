@@ -28,6 +28,13 @@ export const CATEGORY_BADGE: Record<BlogCategory, string> = {
   trauma: "bg-neutral/10 text-neutral",
 };
 
+// Clave de traducción (namespace "blog") por categoría.
+export const CATEGORY_KEY: Record<BlogCategory, string> = {
+  practice: "catPractice",
+  self: "catSelf",
+  trauma: "catTrauma",
+};
+
 export const AUTHOR = {
   name: "Yoliti Osorio, PhD",
   role: "Directora académica · Psicóloga clínica",

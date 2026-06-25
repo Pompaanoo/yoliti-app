@@ -1,16 +1,26 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { getProfile } from "@/lib/auth";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const NAV = [
-  { href: "/cursos", label: "Cursos" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contacto", label: "Contacto" },
-];
+  { href: "/cursos", key: "courses" },
+  { href: "/nosotros", key: "about" },
+  { href: "/blog", key: "blog" },
+  { href: "/contacto", key: "contact" },
+] as const;
 
 export default async function Navbar() {
   const profile = await getProfile();
+  const t = await getTranslations("nav");
+
+  const roleLabel = (role: string) =>
+    role === "super_admin"
+      ? t("roleAdmin")
+      : role === "maestro"
+        ? t("roleMaestro")
+        : t("roleAlumno");
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-300 bg-base-100/90 backdrop-blur">
@@ -27,7 +37,7 @@ export default async function Navbar() {
           <ul className="menu menu-horizontal gap-1 px-1 font-medium">
             {NAV.map((n) => (
               <li key={n.href}>
-                <Link href={n.href}>{n.label}</Link>
+                <Link href={n.href}>{t(n.key)}</Link>
               </li>
             ))}
           </ul>
@@ -35,6 +45,8 @@ export default async function Navbar() {
 
         {/* Acciones */}
         <div className="ml-2 flex items-center gap-2">
+          <LanguageSwitcher />
+
           {profile ? (
             <div className="dropdown dropdown-end">
               <div
@@ -46,7 +58,7 @@ export default async function Navbar() {
                   {(profile.full_name || "U").charAt(0).toUpperCase()}
                 </span>
                 <span className="hidden sm:inline">
-                  {profile.full_name || "Mi cuenta"}
+                  {profile.full_name || t("account")}
                 </span>
                 <i className="fa-solid fa-chevron-down text-xs" />
               </div>
@@ -55,32 +67,32 @@ export default async function Navbar() {
                 className="dropdown-content menu z-50 mt-2 w-56 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl"
               >
                 <li className="menu-title text-xs">
-                  Rol: {roleLabel(profile.role)}
+                  {t("role")}: {roleLabel(profile.role)}
                 </li>
                 <li>
                   <Link href="/dashboard">
-                    <i className="fa-solid fa-graduation-cap w-4" /> Mi aprendizaje
+                    <i className="fa-solid fa-graduation-cap w-4" /> {t("myLearning")}
                   </Link>
                 </li>
                 {(profile.role === "maestro" ||
                   profile.role === "super_admin") && (
                   <li>
                     <Link href="/maestro">
-                      <i className="fa-solid fa-chalkboard-user w-4" /> Panel maestro
+                      <i className="fa-solid fa-chalkboard-user w-4" /> {t("teacherPanel")}
                     </Link>
                   </li>
                 )}
                 {profile.role === "super_admin" && (
                   <li>
                     <Link href="/admin">
-                      <i className="fa-solid fa-shield-halved w-4" /> Administración
+                      <i className="fa-solid fa-shield-halved w-4" /> {t("admin")}
                     </Link>
                   </li>
                 )}
                 <li>
                   <form action="/auth/sign-out" method="post">
                     <button type="submit" className="text-error">
-                      <i className="fa-solid fa-right-from-bracket w-4" /> Cerrar sesión
+                      <i className="fa-solid fa-right-from-bracket w-4" /> {t("logout")}
                     </button>
                   </form>
                 </li>
@@ -89,10 +101,10 @@ export default async function Navbar() {
           ) : (
             <>
               <Link href="/login" className="btn btn-ghost btn-sm">
-                Entrar
+                {t("login")}
               </Link>
               <Link href="/registro" className="btn btn-primary btn-sm">
-                Registrarme
+                {t("register")}
               </Link>
             </>
           )}
@@ -108,7 +120,7 @@ export default async function Navbar() {
             >
               {NAV.map((n) => (
                 <li key={n.href}>
-                  <Link href={n.href}>{n.label}</Link>
+                  <Link href={n.href}>{t(n.key)}</Link>
                 </li>
               ))}
             </ul>
@@ -117,12 +129,4 @@ export default async function Navbar() {
       </div>
     </header>
   );
-}
-
-function roleLabel(role: string) {
-  return role === "super_admin"
-    ? "Super admin"
-    : role === "maestro"
-      ? "Maestro"
-      : "Alumno";
 }

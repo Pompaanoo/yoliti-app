@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +9,12 @@ export const metadata: Metadata = {
     "Cursos en línea de bienestar, inteligencia emocional y comunicación clínica. Plataforma educativa Yoliti.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
   return (
-    <html lang="es" data-theme="yoliti">
+    <html lang={locale} data-theme="yoliti">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -29,7 +32,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-base-100 text-base-content antialiased">
-        {children}
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

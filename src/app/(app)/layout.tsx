@@ -11,27 +11,31 @@ export default async function AppLayout({
   const profile = await getProfile();
   if (!profile) redirect("/login");
 
+  const isStaff =
+    profile.role === "maestro" || profile.role === "super_admin";
+  const isAdmin = profile.role === "super_admin";
+
   const links = [
     { href: "/dashboard", label: "Mi aprendizaje", icon: "fa-graduation-cap" },
   ];
-  if (profile.role === "maestro" || profile.role === "super_admin") {
-    links.push({
-      href: "/maestro",
-      label: "Panel maestro",
-      icon: "fa-chalkboard-user",
-    });
+
+  if (isStaff) {
+    links.push(
+      { href: "/admin/cursos", label: "Gestión de cursos", icon: "fa-book-open" },
+      { href: "/admin/grupos", label: "Grupos", icon: "fa-people-group" }
+    );
   }
-  if (profile.role === "super_admin") {
-    links.push({
-      href: "/admin",
-      label: "Administración",
-      icon: "fa-shield-halved",
-    });
+
+  if (isAdmin) {
+    links.push(
+      { href: "/admin/progreso", label: "Progreso alumnos", icon: "fa-chart-line" },
+      { href: "/admin", label: "Administración", icon: "fa-shield-halved" }
+    );
   }
 
   return (
     <div className="flex min-h-screen bg-base-200">
-      {/* Sidebar */}
+      {/* Sidebar desktop */}
       <aside className="hidden w-64 flex-col border-r border-base-300 bg-base-100 md:flex">
         <Link href="/" className="flex items-center border-b border-base-300 p-5">
           <Logo className="h-9" />

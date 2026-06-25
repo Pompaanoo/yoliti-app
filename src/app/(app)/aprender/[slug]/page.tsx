@@ -27,13 +27,11 @@ export default async function AprenderPage({
   if (!course) notFound();
   const c = course as Course;
 
-  // El maestro dueño del curso y el super_admin pueden previsualizar.
   const profile = await getProfile();
   const isStaff =
     profile?.role === "super_admin" || c.teacher_id === user.id;
 
-  // Verificar inscripción. Se exige para CUALQUIER curso (gratis o pago):
-  // sin sesión (lo bloquea el middleware) o sin inscripción → sin acceso.
+  // Verificar acceso: inscripción directa O pertenencia a grupo con este curso
   const { data: enr } = await supabase
     .from("enrollments")
     .select("id")
@@ -41,7 +39,29 @@ export default async function AprenderPage({
     .eq("course_id", c.id)
     .maybeSingle();
 
-  if (!enr && !isStaff) {
+  let hasGroupAccess = false;
+  if (!enr) {
+    const { data: groupMembership } = await supabase
+      .from("group_students")
+      .select("group_id, groups!inner(group_courses!inner(course_id))")
+      .eq("user_id", user.id);
+
+    if (groupMembership && groupMembership.length > 0) {
+      for (const gs of groupMembership as unknown as {
+        group_id: string;
+        groups: { group_courses: { course_id: string }[] };
+      }[]) {
+        if (gs.groups?.group_courses?.some((gc) => gc.course_id === c.id)) {
+          hasGroupAccess = true;
+          break;
+        }
+      }
+    }
+  }
+
+  const hasAccess = !!enr || hasGroupAccess || isStaff;
+
+  if (!hasAccess) {
     return (
       <div className="mx-auto max-w-md rounded-box border border-base-300 bg-base-100 p-8 text-center">
         <i className="fa-solid fa-lock mb-3 text-3xl text-accent" />
@@ -58,19 +78,40 @@ export default async function AprenderPage({
     );
   }
 
-  const { data: modulesData } = await supabase
+  // Cargar módulos + capítulos
+  const { data: modulesRaw } = await supabase
     .from("modules")
     .select("*, lessons(*)")
     .eq("course_id", c.id)
     .order("position");
 
-  const modules = (modulesData as ModuleWithLessons[]) ?? [];
+  const modules = ((modulesRaw as ModuleWithLessons[]) ?? []).map((m) => ({
+    ...m,
+    lessons: [...m.lessons].sort((a, b) => a.position - b.position),
+  }));
+
+  // Cargar progreso del usuario
+  const allLessonIds = modules.flatMap((m) => m.lessons.map((l) => l.id));
+  let completedIds = new Set<string>();
+
+  if (allLessonIds.length > 0) {
+    const { data: progressRaw } = await supabase
+      .from("lesson_progress")
+      .select("lesson_id")
+      .eq("user_id", user.id)
+      .eq("completed", true)
+      .in("lesson_id", allLessonIds);
+
+    completedIds = new Set(
+      (progressRaw ?? []).map((r: { lesson_id: string }) => r.lesson_id)
+    );
+  }
 
   return (
     <LessonPlayer
       courseTitle={c.title}
-      courseSlug={c.slug}
       modules={modules}
+      completedIds={completedIds}
     />
   );
 }

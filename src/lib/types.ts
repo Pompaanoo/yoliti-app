@@ -1,9 +1,7 @@
-// Tipos centrales del dominio Yoliti Academy.
-
 export type UserRole = "alumno" | "maestro" | "super_admin";
 
 export interface Profile {
-  id: string; // = auth.users.id
+  id: string;
   full_name: string | null;
   avatar_url: string | null;
   role: UserRole;
@@ -21,8 +19,8 @@ export interface Course {
   description: string | null;
   cover_url: string | null;
   level: CourseLevel;
-  price_cents: number; // 0 = gratis
-  currency: string; // "mxn" | "usd"
+  price_cents: number;
+  currency: string;
   status: CourseStatus;
   teacher_id: string;
   created_at: string;
@@ -35,6 +33,55 @@ export interface Module {
   position: number;
 }
 
+// ─── Contenido interactivo ─────────────────────────────────────
+
+export type LessonType = "video" | "texto" | "quiz" | "dragdrop" | "flashcards" | "pdf";
+
+export interface VideoData {
+  url: string;
+  notes?: string;
+}
+
+export interface TextData {
+  body: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  type: "single" | "truefalse";
+  options: string[];
+  correct: number;
+  explanation?: string;
+}
+
+export interface QuizData {
+  questions: QuizQuestion[];
+}
+
+export interface DragDropData {
+  instruction: string;
+  items: string[];
+  zones: string[];
+  mapping: Record<string, string>;
+}
+
+export interface FlashcardsData {
+  cards: Array<{ front: string; back: string }>;
+}
+
+export interface PdfData {
+  url: string;
+}
+
+export type LessonContentData =
+  | VideoData
+  | TextData
+  | QuizData
+  | DragDropData
+  | FlashcardsData
+  | PdfData;
+
 export interface Lesson {
   id: string;
   module_id: string;
@@ -43,6 +90,8 @@ export interface Lesson {
   content: string | null;
   duration_minutes: number | null;
   position: number;
+  content_type: LessonType;
+  content_data: LessonContentData | null;
 }
 
 export interface Enrollment {
@@ -59,4 +108,35 @@ export interface LessonProgress {
   lesson_id: string;
   completed: boolean;
   completed_at: string | null;
+  progress_pct: number;
+}
+
+// ─── Grupos ───────────────────────────────────────────────────
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string | null;
+  image_url: string | null;
+  teacher_id: string;
+  created_at: string;
+}
+
+export interface GroupStudent {
+  group_id: string;
+  user_id: string;
+  added_at: string;
+  profiles?: Profile;
+}
+
+export interface GroupCourse {
+  group_id: string;
+  course_id: string;
+  assigned_at: string;
+  courses?: Course;
+}
+
+export interface GroupWithDetails extends Group {
+  group_students: GroupStudent[];
+  group_courses: GroupCourse[];
 }

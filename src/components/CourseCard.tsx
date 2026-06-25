@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import type { Course } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 
@@ -8,7 +9,8 @@ const LEVEL_STYLES: Record<string, string> = {
   avanzado: "badge-error",
 };
 
-export default function CourseCard({ course }: { course: Course }) {
+export default async function CourseCard({ course }: { course: Course }) {
+  const t = await getTranslations("common");
   return (
     <Link
       href={`/cursos/${course.slug}`}
@@ -41,11 +43,11 @@ export default function CourseCard({ course }: { course: Course }) {
         <div className="mt-2 flex items-center justify-between">
           <span className="text-lg font-bold text-secondary">
             {course.price_cents === 0
-              ? "Gratis"
+              ? t("free")
               : formatPrice(course.price_cents, course.currency)}
           </span>
           <span className="text-sm font-medium text-primary">
-            Ver curso <i className="fa-solid fa-arrow-right" />
+            {t("viewCourse")} <i className="fa-solid fa-arrow-right" />
           </span>
         </div>
       </div>
