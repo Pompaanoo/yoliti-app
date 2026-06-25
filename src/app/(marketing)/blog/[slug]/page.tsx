@@ -39,7 +39,7 @@ export default async function BlogPostPage({
     <div className="bg-base-200">
       {/* Encabezado */}
       <section className="bg-base-100">
-        <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8">
+        <div className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
           <div className="mb-4 text-xs text-base-content/40">
             <Link href="/" className="hover:text-primary">
               {t("breadcrumbHome")}
@@ -81,7 +81,7 @@ export default async function BlogPostPage({
       </section>
 
       {/* Imagen hero */}
-      <div className="relative z-10 mx-auto -mb-8 max-w-4xl px-6 sm:px-8">
+      <div className="relative z-10 mx-auto -mb-8 max-w-5xl px-6 sm:px-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={post.image}
@@ -91,7 +91,7 @@ export default async function BlogPostPage({
       </div>
 
       {/* Contenido + sidebar */}
-      <section className="mx-auto max-w-4xl px-6 pb-16 pt-16 sm:px-8">
+      <section className="mx-auto max-w-5xl px-6 pb-16 pt-16 sm:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
           {/* Cuerpo */}
           <article className="article-body rounded-box bg-base-100 p-8 shadow-sm lg:p-12">
