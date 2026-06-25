@@ -59,6 +59,15 @@
       { "quote": "\"El enfoque es diferente a todo lo que había visto. No es solo aprender palabras — es entender la cultura. Mis pacientes lo notan inmediatamente.\"", "name": "James R.", "role": "MFT · California, USA" },
       { "quote": "\"Completé 3 módulos y ya uso el vocabulario en sesiones reales. Los materiales son excelentes recursos que sigo consultando semanas después.\"", "name": "Ana P.", "role": "Psicóloga · Colombia" }
     ],
+    "mentorsLabel": "Mentores del Curso",
+    "mentorsTitle": "Aprende de Quienes Entienden la Experiencia Humana",
+    "mentorsDesc": "Nuestros mentores no son solo educadores — son profesionales con experiencia real trabajando con personas, emociones y procesos humanos complejos.",
+    "mentors": [
+      { "name": "Gerardo Wence Muñoz", "role": "Terapeuta/Profesor", "bio": "Enfocado en los procesos emocionales y la conducta humana en contextos de la vida real." },
+      { "name": "Dr. Jorge Israel", "role": "Terapeuta/Profesor", "bio": "Ayuda a las personas a construir conexiones más profundas y comprender las dinámicas relacionales." },
+      { "name": "Anastasia Davies", "role": "Terapeuta", "bio": "Trabaja con enfoques integrativos que combinan teoría y aplicación en el mundo real." },
+      { "name": "Oscar Flores", "role": "Terapeuta", "bio": "Se especializa en enfoques prácticos para guiar a personas a través del cambio." }
+    ],
     "blogLabel": "Recursos",
     "blogTitle": "Artículos recientes",
     "blogViewAll": "Ver blog",

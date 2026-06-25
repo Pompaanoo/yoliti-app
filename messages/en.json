@@ -59,6 +59,15 @@
       { "quote": "\"The approach is unlike anything I had seen. It's not just about learning words — it's about understanding the culture. My patients notice it immediately.\"", "name": "James R.", "role": "MFT · California, USA" },
       { "quote": "\"I completed 3 modules and I'm already using the vocabulary in real sessions. The materials are excellent resources I keep consulting weeks later.\"", "name": "Ana P.", "role": "Psychologist · Colombia" }
     ],
+    "mentorsLabel": "Course Mentors",
+    "mentorsTitle": "Learn from Those Who Understand the Human Experience",
+    "mentorsDesc": "Our mentors are not only educators — they are professionals with real experience working with people, emotions, and complex human processes.",
+    "mentors": [
+      { "name": "Gerardo Wence Muñoz", "role": "Therapist/Professor", "bio": "Focused on emotional processes and human behavior in real-life contexts." },
+      { "name": "Dr. Jorge Israel", "role": "Therapist/Professor", "bio": "Helps people build deeper connections and understand relational dynamics." },
+      { "name": "Anastasia Davies", "role": "Therapist", "bio": "Works with integrative approaches combining theory and real-world application." },
+      { "name": "Oscar Flores", "role": "Therapist", "bio": "Specializes in practical approaches for guiding individuals through change." }
+    ],
     "blogLabel": "Resources",
     "blogTitle": "Recent articles",
     "blogViewAll": "View blog",

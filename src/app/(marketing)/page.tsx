@@ -25,6 +25,7 @@ export default async function HomePage() {
   const target1Items = t.raw("target1Items") as string[];
   const target2Items = t.raw("target2Items") as string[];
   const designedItems = t.raw("designedItems") as string[];
+  const mentors = t.raw("mentors") as { name: string; role: string; bio: string }[];
   const testimonials = t.raw("testimonials") as {
     quote: string;
     name: string;
@@ -280,6 +281,46 @@ export default async function HomePage() {
                     <p className="text-sm font-semibold">{item.name}</p>
                     <p className="text-xs text-white/40">{item.role}</p>
                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mentores */}
+      <section className="bg-base-100">
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+          <div className="mb-12 text-center">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
+              {t("mentorsLabel")}
+            </span>
+            <h2 className="mx-auto max-w-2xl text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
+              {t("mentorsTitle")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-base-content/60">
+              {t("mentorsDesc")}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {mentors.map((mentor, i) => (
+              <div key={mentor.name} className="flex flex-col">
+                <div className="overflow-hidden rounded-2xl bg-base-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      i === 0
+                        ? "https://placehold.co/300x320/0D5C6E/5ECFCA?text=GW"
+                        : "https://placehold.co/300x320/162E22/5ECFCA?text=CY"
+                    }
+                    alt={mentor.name}
+                    className="h-52 w-full object-cover"
+                  />
+                </div>
+                <div className="mt-4">
+                  <h3 className="font-bold text-secondary">{mentor.name}</h3>
+                  <p className="mb-2 text-xs font-medium text-primary">{mentor.role}</p>
+                  <p className="text-sm leading-relaxed text-base-content/60">{mentor.bio}</p>
                 </div>
               </div>
             ))}
