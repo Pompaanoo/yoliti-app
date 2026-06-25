@@ -24,6 +24,7 @@ export default async function HomePage() {
   const heroTags = t.raw("heroTags") as string[];
   const target1Items = t.raw("target1Items") as string[];
   const target2Items = t.raw("target2Items") as string[];
+  const designedItems = t.raw("designedItems") as string[];
   const testimonials = t.raw("testimonials") as {
     quote: string;
     name: string;
@@ -110,6 +111,61 @@ export default async function HomePage() {
               <p className="text-sm text-base-content/50">{statLabels[i]}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Designed for Real Human Understanding */}
+      <section className="bg-base-100">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-8 lg:grid-cols-2">
+          {/* Photo collage */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://placehold.co/280x200/A8D8EA/162E22?text=Yolitia"
+                alt="Yolitia Academy"
+                className="w-full rounded-box object-cover shadow-md"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://placehold.co/280x200/F5E6DA/0D5C6E?text=Online+Learning"
+                alt="Online learning"
+                className="w-full rounded-box object-cover shadow-md"
+              />
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://yolitiacademy.com/wp-content/uploads/2024/04/pic-5.jpg"
+              alt="Yolitia Academy student"
+              className="h-full w-full rounded-box object-cover shadow-md"
+            />
+          </div>
+
+          {/* Text content */}
+          <div>
+            <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-primary">
+              {t("designedLabel")}
+            </span>
+            <h2 className="text-4xl font-extrabold leading-tight text-secondary lg:text-5xl">
+              {t("designedTitle")}{" "}
+              <span className="text-primary">{t("designedTitleHighlight")}</span>
+            </h2>
+            <div className="mt-6 space-y-4 leading-relaxed text-base-content/70">
+              <p>{t("designedP1")}</p>
+              <p>{t("designedP2")}</p>
+              <p>{t("designedP3")}</p>
+            </div>
+            <ul className="mt-7 space-y-2.5 text-sm font-medium text-base-content/80">
+              {designedItems.map((item) => (
+                <li key={item} className="flex items-center gap-2.5">
+                  <span className="grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-primary/15 text-[10px] text-primary">
+                    <i className="fa-solid fa-check" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 

@@ -66,7 +66,19 @@
     "ctaTitle": "Transform your clinical practice today",
     "ctaDesc": "Join over 1,200 professionals who have already elevated their cultural and clinical competence.",
     "ctaBtn1": "Explore all courses",
-    "ctaBtn2": "Talk to an advisor"
+    "ctaBtn2": "Talk to an advisor",
+    "designedLabel": "Built by Professionals…",
+    "designedTitle": "Designed for",
+    "designedTitleHighlight": "Real Human Understanding",
+    "designedP1": "At Yolitia Academy, we believe education should go beyond information.",
+    "designedP2": "Our programs are designed to help you truly understand the human mind, emotions, and behavior — not just from theory, but through real-life application.",
+    "designedP3": "Whether you are a professional or someone seeking personal growth, this is a space to learn, integrate, and transform.",
+    "designedItems": [
+      "Practical, experience-based learning",
+      "Integrative approach: mind, body, and emotion",
+      "Professional and personal development",
+      "Certification with real-world application"
+    ]
   },
   "nosotros": {
     "heroLabel": "About Yolitia Academy",
