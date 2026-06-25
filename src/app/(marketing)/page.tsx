@@ -117,29 +117,13 @@ export default async function HomePage() {
       {/* Designed for Real Human Understanding */}
       <section className="bg-base-100">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-8 lg:grid-cols-2">
-          {/* Photo collage */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://placehold.co/280x200/A8D8EA/162E22?text=Yolitia"
-                alt="Yolitia Academy"
-                className="w-full rounded-box object-cover shadow-md"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://placehold.co/280x200/F5E6DA/0D5C6E?text=Online+Learning"
-                alt="Online learning"
-                className="w-full rounded-box object-cover shadow-md"
-              />
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://yolitiacademy.com/wp-content/uploads/2024/04/pic-5.jpg"
-              alt="Yolitia Academy student"
-              className="h-full w-full rounded-box object-cover shadow-md"
-            />
-          </div>
+          {/* Photo */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://yolitiacademy.com/wp-content/uploads/2024/04/pic-5.jpg"
+            alt="Yolitia Academy student"
+            className="w-full rounded-box object-cover shadow-lg"
+          />
 
           {/* Text content */}
           <div>
