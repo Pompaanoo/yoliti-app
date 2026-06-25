@@ -28,6 +28,7 @@ export default async function AppLayout({
 
   if (isAdmin) {
     links.push(
+      { href: "/admin/alumnos", label: "Alumnos", icon: "fa-user-graduate" },
       { href: "/admin/progreso", label: "Progreso alumnos", icon: "fa-chart-line" },
       { href: "/admin", label: "Administración", icon: "fa-shield-halved" }
     );

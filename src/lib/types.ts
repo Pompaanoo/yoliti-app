@@ -140,3 +140,20 @@ export interface GroupWithDetails extends Group {
   group_students: GroupStudent[];
   group_courses: GroupCourse[];
 }
+
+// ─── Pagos ────────────────────────────────────────────────────
+
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
+
+export interface Payment {
+  id: string;
+  user_id: string;
+  course_id: string | null;
+  amount_cents: number;
+  currency: string;
+  stripe_session_id: string | null;
+  stripe_payment_intent: string | null;
+  status: PaymentStatus;
+  paid_at: string | null;
+  created_at: string;
+}
