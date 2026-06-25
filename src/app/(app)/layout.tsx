@@ -34,6 +34,8 @@ export default async function AppLayout({
     );
   }
 
+  links.push({ href: "/cuenta", label: "Mi cuenta", icon: "fa-circle-user" });
+
   return (
     <div className="flex h-screen overflow-hidden bg-base-200">
       {/* Sidebar desktop */}
