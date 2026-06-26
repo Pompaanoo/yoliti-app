@@ -12,24 +12,42 @@ interface Props {
 
 export function CourseCatalog({ courses, categories }: Props) {
   const t = useTranslations("course");
-  const [activeId, setActiveId] = useState<string | null>(null);
-
-  const filtered = activeId
-    ? courses.filter((c) => c.categories?.some((cat) => cat.id === activeId))
-    : courses;
+  const [activeIds, setActiveIds] = useState<Set<string>>(new Set());
 
   function toggle(id: string) {
-    setActiveId((prev) => (prev === id ? null : id));
+    setActiveIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   }
+
+  function getSortGroup(course: Course): number {
+    const cats = course.categories ?? [];
+    const matchCount = cats.filter((cat) => activeIds.has(cat.id)).length;
+    if (matchCount === 0) return 3; // no match → last, dimmed
+
+    if (activeIds.size === 1) {
+      // 1 filtro: exclusivo (solo esa categoría) → primero; multi-categoría → segundo
+      return cats.length === 1 ? 1 : 2;
+    }
+
+    // 2+ filtros: coincide con todos → primero; coincide con alguno → segundo
+    return matchCount === activeIds.size ? 1 : 2;
+  }
+
+  const sorted = activeIds.size === 0
+    ? courses
+    : [...courses].sort((a, b) => getSortGroup(a) - getSortGroup(b));
 
   return (
     <>
       {categories.length > 0 && (
         <div className="mt-8 flex flex-wrap gap-2">
           <button
-            onClick={() => setActiveId(null)}
+            onClick={() => setActiveIds(new Set())}
             className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-medium transition-all ${
-              activeId === null
+              activeIds.size === 0
                 ? "border-secondary bg-secondary text-white"
                 : "border-base-300 bg-base-100 text-base-content/70 hover:border-base-400"
             }`}
@@ -38,7 +56,7 @@ export function CourseCatalog({ courses, categories }: Props) {
           </button>
 
           {categories.map((cat) => {
-            const isActive = activeId === cat.id;
+            const isActive = activeIds.has(cat.id);
             return (
               <button
                 key={cat.id}
@@ -58,11 +76,22 @@ export function CourseCatalog({ courses, categories }: Props) {
         </div>
       )}
 
-      {filtered.length > 0 ? (
+      {sorted.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((c) => (
-            <CourseCard key={c.id} course={c} />
-          ))}
+          {sorted.map((c) => {
+            const matchCount = activeIds.size > 0
+              ? (c.categories?.filter((cat) => activeIds.has(cat.id)).length ?? 0)
+              : null;
+            const dimmed = matchCount !== null && matchCount === 0;
+            return (
+              <div
+                key={c.id}
+                className={`transition-opacity duration-200 ${dimmed ? "opacity-35" : "opacity-100"}`}
+              >
+                <CourseCard course={c} />
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="mt-12 rounded-box border border-dashed border-base-300 p-16 text-center text-base-content/50">
