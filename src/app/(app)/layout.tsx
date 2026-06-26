@@ -17,6 +17,7 @@ export default async function AppLayout({
 
   const links = [
     { href: "/dashboard", label: "Mi aprendizaje", icon: "fa-graduation-cap" },
+    { href: "/mis-calificaciones", label: "Mis calificaciones", icon: "fa-chart-bar" },
   ];
 
   if (isStaff) {

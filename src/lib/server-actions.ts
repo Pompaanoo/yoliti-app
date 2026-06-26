@@ -4,6 +4,72 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser, requireRole } from "@/lib/auth";
 
+// ─── Quiz attempts ────────────────────────────────────────────
+
+export async function saveQuizAttempt(
+  lessonId: string,
+  scorePct: number,
+  answersJson: string
+) {
+  const user = await requireUser();
+  const supabase = await createClient();
+  await supabase.from("quiz_attempts").insert({
+    user_id: user.id,
+    lesson_id: lessonId,
+    score_pct: scorePct,
+    answers_json: JSON.parse(answersJson),
+  });
+}
+
+// ─── Certificados ─────────────────────────────────────────────
+
+export async function checkAndIssueCertificate(
+  courseId: string
+): Promise<string | null> {
+  const user = await requireUser();
+  const supabase = await createClient();
+
+  // Obtener todas las lecciones del curso
+  const { data: mods } = await supabase
+    .from("modules")
+    .select("lessons(id)")
+    .eq("course_id", courseId);
+
+  const allIds = (mods ?? []).flatMap(
+    (m) => (m.lessons as { id: string }[]).map((l) => l.id)
+  );
+  if (allIds.length === 0) return null;
+
+  // Verificar si completó todas
+  const { data: done } = await supabase
+    .from("lesson_progress")
+    .select("lesson_id")
+    .eq("user_id", user.id)
+    .eq("completed", true)
+    .in("lesson_id", allIds);
+
+  if ((done?.length ?? 0) < allIds.length) return null;
+
+  // Si ya tiene certificado, devolver el código existente
+  const { data: existing } = await supabase
+    .from("certificates")
+    .select("code")
+    .eq("user_id", user.id)
+    .eq("course_id", courseId)
+    .maybeSingle();
+
+  if (existing) return existing.code;
+
+  // Emitir certificado nuevo
+  const { data: newCert } = await supabase
+    .from("certificates")
+    .insert({ user_id: user.id, course_id: courseId })
+    .select("code")
+    .single();
+
+  return newCert?.code ?? null;
+}
+
 // ─── Progreso ─────────────────────────────────────────────────
 
 export async function markLessonProgress(

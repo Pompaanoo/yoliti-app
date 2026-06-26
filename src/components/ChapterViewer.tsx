@@ -11,12 +11,12 @@ import type {
   PdfData,
 } from "@/lib/types";
 
-const VideoPlayer = dynamic(() => import("./interactive/VideoPlayer"), { ssr: false });
-const QuizPlayer = dynamic(() => import("./interactive/QuizPlayer"), { ssr: false });
+const VideoPlayer    = dynamic(() => import("./interactive/VideoPlayer"),    { ssr: false });
+const QuizPlayer     = dynamic(() => import("./interactive/QuizPlayer"),     { ssr: false });
 const FlashcardPlayer = dynamic(() => import("./interactive/FlashcardPlayer"), { ssr: false });
 const DragDropActivity = dynamic(() => import("./interactive/DragDropActivity"), { ssr: false });
-const PdfViewer = dynamic(() => import("./interactive/PdfViewer"), { ssr: false });
-const TextContent = dynamic(() => import("./interactive/TextContent"), { ssr: false });
+const PdfViewer      = dynamic(() => import("./interactive/PdfViewer"),      { ssr: false });
+const TextContent    = dynamic(() => import("./interactive/TextContent"),    { ssr: false });
 
 export default function ChapterViewer({
   lesson,
@@ -49,6 +49,7 @@ export default function ChapterViewer({
       return (
         <QuizPlayer
           data={(d as QuizData) ?? { questions: [] }}
+          lessonId={lesson.id}
           onComplete={handleComplete}
         />
       );

@@ -3,8 +3,8 @@ import { stripe, stripeEnabled } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 
 /**
- * Webhook de Stripe. Confirma la inscripción cuando el pago se
- * completa. Inactivo hasta que el cliente entregue las credenciales
+ * Webhook de Stripe. Confirma inscripción y guarda el pago cuando
+ * el checkout se completa. Inactivo hasta que lleguen las credenciales
  * (STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET).
  */
 export async function POST(req: Request) {
@@ -31,18 +31,45 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as {
+      id: string;
+      amount_total: number | null;
+      currency: string;
+      payment_intent: string | null;
       metadata?: { course_id?: string; user_id?: string };
     };
+
     const courseId = session.metadata?.course_id;
     const userId = session.metadata?.user_id;
 
     if (courseId && userId) {
       const admin = createAdminClient();
+
+      // Inscribir alumno
       await admin
         .from("enrollments")
         .upsert(
           { user_id: userId, course_id: courseId, status: "activo" },
           { onConflict: "user_id,course_id" }
+        );
+
+      // Guardar registro de pago
+      await admin
+        .from("payments")
+        .upsert(
+          {
+            user_id: userId,
+            course_id: courseId,
+            amount_cents: session.amount_total ?? 0,
+            currency: session.currency ?? "mxn",
+            stripe_session_id: session.id,
+            stripe_payment_intent:
+              typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : null,
+            status: "paid",
+            paid_at: new Date().toISOString(),
+          },
+          { onConflict: "stripe_session_id" }
         );
     }
   }

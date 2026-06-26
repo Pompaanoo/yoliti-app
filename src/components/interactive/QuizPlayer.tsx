@@ -1,18 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { saveQuizAttempt } from "@/lib/server-actions";
 import type { QuizData } from "@/lib/types";
 
 export default function QuizPlayer({
   data,
+  lessonId,
   onComplete,
 }: {
   data: QuizData;
+  lessonId?: string;
   onComplete: (pct: number) => void;
 }) {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [, startTransition] = useTransition();
 
   if (data.questions.length === 0) {
     return (
@@ -31,6 +35,11 @@ export default function QuizPlayer({
     setScore(pct);
     setSubmitted(true);
     onComplete(pct);
+    if (lessonId) {
+      startTransition(async () => {
+        await saveQuizAttempt(lessonId, pct, JSON.stringify(answers));
+      });
+    }
   };
 
   const handleReset = () => {
@@ -50,17 +59,20 @@ export default function QuizPlayer({
           }`}
         >
           <p className="text-3xl font-extrabold">{score}%</p>
-          <p className="mt-1 text-sm">
+          <p className="mt-1 text-sm font-medium">
             {score >= 70
               ? "¡Excelente! Aprobaste el quiz."
               : "Necesitas repasar el material. Inténtalo de nuevo."}
+          </p>
+          <p className="mt-0.5 text-xs opacity-70">
+            {data.questions.filter((q) => answers[q.id] === q.correct).length} de{" "}
+            {data.questions.length} correctas
           </p>
         </div>
       )}
 
       {data.questions.map((q, qi) => {
         const chosen = answers[q.id];
-        const isCorrect = submitted && chosen === q.correct;
         const isWrong = submitted && chosen !== undefined && chosen !== q.correct;
 
         return (

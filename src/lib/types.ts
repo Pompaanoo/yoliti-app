@@ -141,6 +141,25 @@ export interface GroupWithDetails extends Group {
   group_courses: GroupCourse[];
 }
 
+// ─── Quiz y certificados ──────────────────────────────────────
+
+export interface QuizAttempt {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  score_pct: number;
+  answers_json: Record<string, number>;
+  created_at: string;
+}
+
+export interface Certificate {
+  id: string;
+  user_id: string;
+  course_id: string;
+  code: string;
+  issued_at: string;
+}
+
 // ─── Pagos ────────────────────────────────────────────────────
 
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";

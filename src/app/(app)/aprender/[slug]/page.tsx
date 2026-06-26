@@ -110,6 +110,7 @@ export default async function AprenderPage({
   return (
     <LessonPlayer
       courseTitle={c.title}
+      courseId={c.id}
       modules={modules}
       completedIds={completedIds}
     />
