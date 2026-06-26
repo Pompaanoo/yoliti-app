@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/format";
 import { STATUS_BADGE } from "@/lib/course-status";
 import type { Course } from "@/lib/types";
 import { TranslateAllButton } from "./TranslateAllButton";
+import { CourseStatusFilter } from "./CourseStatusFilter";
 
 export const metadata = { title: "Gestión de cursos — Yoliti Academy" };
 
@@ -87,7 +88,12 @@ async function createCourse(formData: FormData) {
   revalidatePath("/admin/cursos");
 }
 
-export default async function CursosAdminPage() {
+export default async function CursosAdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status: statusFilter } = await searchParams;
   const profile = await requireRole(["maestro", "super_admin"]);
   const supabase = await createClient();
 
@@ -98,6 +104,9 @@ export default async function CursosAdminPage() {
 
   if (profile.role !== "super_admin") {
     query.eq("teacher_id", profile.id);
+  }
+  if (statusFilter) {
+    query.eq("status", statusFilter);
   }
 
   const { data } = await query;
@@ -116,7 +125,9 @@ export default async function CursosAdminPage() {
         {process.env.DEEPL_API_KEY && <TranslateAllButton />}
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+      <CourseStatusFilter />
+
+      <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_340px]">
         {/* Lista */}
         <section>
           {courses.length === 0 ? (
