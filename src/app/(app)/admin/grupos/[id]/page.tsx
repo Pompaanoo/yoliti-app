@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import {
   updateGroup,
@@ -9,7 +9,7 @@ import {
   addCourseToGroup,
   removeCourseFromGroup,
 } from "@/lib/server-actions";
-import type { Course, GroupWithDetails } from "@/lib/types";
+import type { Course, GroupWithDetails, Profile } from "@/lib/types";
 
 export const metadata = { title: "Editar grupo — Yoliti Academy" };
 
@@ -42,6 +42,24 @@ export default async function EditGrupoPage({
 
   const assignedCourseIds = new Set(group.group_courses.map((gc) => gc.course_id));
   const availableCourses = allCourses.filter((c) => !assignedCourseIds.has(c.id));
+
+  // Alumnos disponibles para agregar (todos los perfiles con rol alumno no ya en el grupo)
+  const admin = createAdminClient();
+  const { data: { users: authUsers } } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  const { data: allProfilesRaw } = await supabase
+    .from("profiles")
+    .select("id, full_name, role")
+    .eq("role", "alumno")
+    .order("full_name");
+  const allProfiles = (allProfilesRaw as Pick<Profile, "id" | "full_name" | "role">[]) ?? [];
+
+  const memberIds = new Set(group.group_students.map((gs) => gs.user_id));
+  const availableStudents = allProfiles
+    .filter((p) => !memberIds.has(p.id))
+    .map((p) => {
+      const authUser = authUsers?.find((u: { id: string; email?: string }) => u.id === p.id);
+      return { ...p, email: authUser?.email ?? "" };
+    });
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -111,19 +129,28 @@ export default async function EditGrupoPage({
         </h2>
 
         {/* Agregar alumno */}
-        <form action={addStudentToGroup} className="mb-5 flex gap-2">
-          <input type="hidden" name="group_id" value={id} />
-          <input
-            name="email"
-            type="email"
-            required
-            placeholder="correo@ejemplo.com"
-            className="input input-sm flex-1"
-          />
-          <button className="btn btn-primary btn-sm">
-            <i className="fa-solid fa-user-plus" /> Agregar
-          </button>
-        </form>
+        {availableStudents.length > 0 ? (
+          <form action={addStudentToGroup} className="mb-5 flex gap-2">
+            <input type="hidden" name="group_id" value={id} />
+            <select name="user_id" className="select select-sm flex-1" defaultValue="">
+              <option value="" disabled>Selecciona un alumno…</option>
+              {availableStudents.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.full_name ? `${s.full_name} — ${s.email}` : s.email}
+                </option>
+              ))}
+            </select>
+            <button className="btn btn-primary btn-sm">
+              <i className="fa-solid fa-user-plus" /> Agregar
+            </button>
+          </form>
+        ) : (
+          <p className="mb-5 text-sm text-base-content/40">
+            {memberIds.size === 0
+              ? "No hay alumnos registrados en la plataforma todavía."
+              : "Todos los alumnos registrados ya están en este grupo."}
+          </p>
+        )}
 
         {group.group_students.length === 0 ? (
           <p className="text-sm text-base-content/50">No hay alumnos en este grupo.</p>

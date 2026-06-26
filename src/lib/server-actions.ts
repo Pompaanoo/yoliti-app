@@ -245,21 +245,12 @@ export async function addStudentToGroup(formData: FormData) {
   await requireRole(["maestro", "super_admin"]);
   const supabase = await createClient();
   const groupId = String(formData.get("group_id"));
-  const email = String(formData.get("email")).trim().toLowerCase();
-  if (!email) return;
-
-  // Buscar usuario por email en auth.users via admin client
-  const { createAdminClient } = await import("@/lib/supabase/server");
-  const admin = createAdminClient();
-  const { data: authUsers } = await admin.auth.admin.listUsers();
-  const found = authUsers?.users.find(
-    (u: { email?: string }) => u.email?.toLowerCase() === email
-  ) as { id: string; email?: string } | undefined;
-  if (!found) return;
+  const userId = String(formData.get("user_id"));
+  if (!userId || !groupId) return;
 
   await supabase
     .from("group_students")
-    .upsert({ group_id: groupId, user_id: found.id }, { onConflict: "group_id,user_id" });
+    .upsert({ group_id: groupId, user_id: userId }, { onConflict: "group_id,user_id" });
 
   // Auto-inscribir en todos los cursos del grupo
   const { data: gc } = await supabase
@@ -269,7 +260,7 @@ export async function addStudentToGroup(formData: FormData) {
 
   if (gc && gc.length > 0) {
     await supabase.from("enrollments").upsert(
-      gc.map((r) => ({ user_id: found.id, course_id: r.course_id, status: "activo" })),
+      gc.map((r) => ({ user_id: userId, course_id: r.course_id, status: "activo" })),
       { onConflict: "user_id,course_id" }
     );
   }
