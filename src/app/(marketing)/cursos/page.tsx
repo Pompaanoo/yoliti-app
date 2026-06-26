@@ -1,18 +1,29 @@
 import { createClient } from "@/lib/supabase/server";
 import CourseCard from "@/components/CourseCard";
-import type { Course } from "@/lib/types";
+import type { Category, Course } from "@/lib/types";
 
 export const metadata = { title: "Cursos — Yoliti Academy" };
 
 export default async function CursosPage() {
   const supabase = await createClient();
+
   const { data } = await supabase
     .from("courses")
-    .select("*")
+    .select("*, categories(id, name, color)")
     .eq("status", "publicado")
     .order("created_at", { ascending: false });
 
   const courses = (data as Course[]) ?? [];
+
+  // Categorías únicas presentes en los cursos publicados para filtro
+  const seenIds = new Set<string>();
+  const usedCategories: Category[] = [];
+  for (const c of courses) {
+    if (c.categories && !seenIds.has(c.categories.id)) {
+      seenIds.add(c.categories.id);
+      usedCategories.push(c.categories);
+    }
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16">
@@ -25,8 +36,24 @@ export default async function CursosPage() {
         </p>
       </header>
 
+      {/* Filtros por categoría */}
+      {usedCategories.length > 0 && (
+        <div className="mt-8 flex flex-wrap gap-2">
+          {usedCategories.map((cat) => (
+            <span
+              key={cat.id}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white"
+              style={{ backgroundColor: cat.color }}
+            >
+              <i className="fa-solid fa-tag text-[10px]" />
+              {cat.name}
+            </span>
+          ))}
+        </div>
+      )}
+
       {courses.length > 0 ? (
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((c) => (
             <CourseCard key={c.id} course={c} />
           ))}
@@ -35,8 +62,7 @@ export default async function CursosPage() {
         <div className="mt-12 rounded-box border border-dashed border-base-300 p-16 text-center text-base-content/50">
           <i className="fa-solid fa-book-open mb-3 text-3xl" />
           <p>
-            No hay cursos publicados todavía. Conecta tu proyecto de Supabase y
-            crea cursos desde el panel de maestro.
+            No hay cursos publicados todavía.
           </p>
         </div>
       )}

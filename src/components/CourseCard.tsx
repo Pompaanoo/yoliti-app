@@ -29,10 +29,18 @@ export default async function CourseCard({ course }: { course: Course }) {
         )}
       </figure>
       <div className="card-body gap-3 p-5">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm`}>
             {course.level}
           </span>
+          {course.categories && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold text-white"
+              style={{ backgroundColor: course.categories.color }}
+            >
+              {course.categories.name}
+            </span>
+          )}
         </div>
         <h3 className="card-title text-lg leading-snug group-hover:text-primary">
           {course.title}

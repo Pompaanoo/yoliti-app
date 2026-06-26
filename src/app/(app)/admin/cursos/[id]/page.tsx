@@ -10,7 +10,7 @@ import {
   createLesson,
   deleteLesson,
 } from "@/lib/server-actions";
-import type { Course, Module, Lesson } from "@/lib/types";
+import type { Category, Course, Module, Lesson } from "@/lib/types";
 
 export const metadata = { title: "Editor de curso — Yoliti Academy" };
 
@@ -53,6 +53,12 @@ export default async function CourseEditorPage({
 
   if (!courseRaw) notFound();
   const course = courseRaw as Course;
+
+  const { data: categoriesRaw } = await supabase
+    .from("categories")
+    .select("id, name, color")
+    .order("name");
+  const categories = (categoriesRaw as Pick<Category, "id" | "name" | "color">[]) ?? [];
 
   const { data: modulesRaw } = await supabase
     .from("modules")
@@ -104,6 +110,15 @@ export default async function CourseEditorPage({
           <div className="sm:col-span-2">
             <label htmlFor="c-cover" className="mb-1 block text-sm font-medium">URL imagen de portada</label>
             <input id="c-cover" name="cover_url" type="url" defaultValue={course.cover_url ?? ""} className="input w-full" placeholder="https://..." />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="c-category" className="mb-1 block text-sm font-medium">Categoría</label>
+            <select id="c-category" name="category_id" defaultValue={course.category_id ?? ""} className="select w-full">
+              <option value="">Sin categoría</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label htmlFor="c-level" className="mb-1 block text-sm font-medium">Nivel</label>

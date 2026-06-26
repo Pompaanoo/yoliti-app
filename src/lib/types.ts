@@ -11,6 +11,14 @@ export interface Profile {
 export type CourseLevel = "principiante" | "intermedio" | "avanzado";
 export type CourseStatus = "borrador" | "publicado" | "archivado";
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+  created_at: string;
+}
+
 export interface Course {
   id: string;
   slug: string;
@@ -23,7 +31,9 @@ export interface Course {
   currency: string;
   status: CourseStatus;
   teacher_id: string;
+  category_id: string | null;
   created_at: string;
+  categories?: Category | null;
 }
 
 export interface Module {

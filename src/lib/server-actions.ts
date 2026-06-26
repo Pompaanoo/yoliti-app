@@ -329,6 +329,8 @@ export async function updateCourse(formData: FormData) {
   const id = String(formData.get("id"));
   const priceMx = Number(formData.get("price") ?? 0);
 
+  const categoryId = String(formData.get("category_id") ?? "").trim() || null;
+
   await supabase
     .from("courses")
     .update({
@@ -339,9 +341,57 @@ export async function updateCourse(formData: FormData) {
       level: String(formData.get("level")),
       price_cents: Math.round(priceMx * 100),
       status: String(formData.get("status")),
+      category_id: categoryId,
     })
     .eq("id", id);
 
   revalidatePath(`/admin/cursos/${id}`);
+  revalidatePath("/admin/cursos");
+}
+
+// ─── Categorías ───────────────────────────────────────────────
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export async function createCategory(formData: FormData) {
+  await requireRole("super_admin");
+  const supabase = await createClient();
+  const name = String(formData.get("name") ?? "").trim();
+  const color = String(formData.get("color") ?? "#6366f1");
+  if (!name) return;
+
+  await supabase.from("categories").insert({
+    name,
+    slug: `${slugify(name)}-${Math.random().toString(36).slice(2, 5)}`,
+    color,
+  });
+  revalidatePath("/admin/categorias");
+}
+
+export async function updateCategory(formData: FormData) {
+  await requireRole("super_admin");
+  const supabase = await createClient();
+  const id = String(formData.get("id"));
+  const name = String(formData.get("name") ?? "").trim();
+  const color = String(formData.get("color") ?? "#6366f1");
+  if (!id || !name) return;
+
+  await supabase.from("categories").update({ name, color }).eq("id", id);
+  revalidatePath("/admin/categorias");
+}
+
+export async function deleteCategory(formData: FormData) {
+  await requireRole("super_admin");
+  const supabase = await createClient();
+  const id = String(formData.get("id"));
+  await supabase.from("categories").delete().eq("id", id);
+  revalidatePath("/admin/categorias");
   revalidatePath("/admin/cursos");
 }

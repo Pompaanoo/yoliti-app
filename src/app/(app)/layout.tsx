@@ -31,6 +31,7 @@ export default async function AppLayout({
     links.push(
       { href: "/admin/alumnos", label: "Alumnos", icon: "fa-user-graduate" },
       { href: "/admin/progreso", label: "Progreso alumnos", icon: "fa-chart-line" },
+      { href: "/admin/categorias", label: "Categorías", icon: "fa-tags" },
       { href: "/admin", label: "Administración", icon: "fa-shield-halved" }
     );
   }
