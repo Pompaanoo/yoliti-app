@@ -238,7 +238,7 @@ export default async function MaestroPage() {
                             c.status === "publicado"
                               ? "badge-success text-white"
                               : c.status === "archivado"
-                                ? "badge-ghost"
+                                ? "badge-error text-white"
                                 : "badge-warning text-white"
                           }`}
                         >

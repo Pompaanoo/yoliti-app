@@ -105,7 +105,7 @@ export default async function CursosAdminPage() {
   const STATUS_BADGE: Record<string, string> = {
     publicado: "badge-success text-white",
     borrador: "badge-warning text-white",
-    archivado: "badge-ghost",
+    archivado: "badge-error text-white",
   };
 
   return (
