@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
-import { createCategory, updateCategory, deleteCategory } from "@/lib/server-actions";
+import { createCategory } from "@/lib/server-actions";
 import type { Category } from "@/lib/types";
+import { CategoryRow } from "./CategoryRow";
 
 export const metadata = { title: "Categorías — Yoliti Academy" };
 
@@ -90,58 +91,11 @@ export default async function CategoriasPage() {
         ) : (
           <ul className="divide-y divide-base-200">
             {categories.map((cat) => (
-              <li key={cat.id} className="px-6 py-4">
-                <form action={updateCategory} className="flex flex-wrap items-center gap-3">
-                  <input type="hidden" name="id" value={cat.id} />
-
-                  {/* Dot de color */}
-                  <span
-                    className="h-4 w-4 flex-shrink-0 rounded-full"
-                    style={{ backgroundColor: cat.color }}
-                  />
-
-                  {/* Nombre editable */}
-                  <input
-                    name="name"
-                    defaultValue={cat.name}
-                    className="input input-bordered input-sm flex-1 min-w-32"
-                    required
-                  />
-
-                  {/* Color editable */}
-                  <select
-                    name="color"
-                    defaultValue={cat.color}
-                    className="select select-bordered select-sm w-36"
-                  >
-                    {PRESET_COLORS.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Cursos que la usan */}
-                  <span className="badge badge-ghost badge-sm whitespace-nowrap">
-                    {courseCount[cat.id] ?? 0} curso{(courseCount[cat.id] ?? 0) !== 1 ? "s" : ""}
-                  </span>
-
-                  <button type="submit" className="btn btn-ghost btn-sm text-primary">
-                    <i className="fa-solid fa-floppy-disk" />
-                  </button>
-                </form>
-
-                <form action={deleteCategory} className="mt-1 ml-7">
-                  <input type="hidden" name="id" value={cat.id} />
-                  <button
-                    type="submit"
-                    className="btn btn-ghost btn-xs text-error"
-                    title="Eliminar (los cursos quedarán sin categoría)"
-                  >
-                    <i className="fa-solid fa-trash text-[10px]" /> Eliminar
-                  </button>
-                </form>
-              </li>
+              <CategoryRow
+                key={`${cat.id}-${cat.color}`}
+                cat={cat}
+                courseCount={courseCount[cat.id] ?? 0}
+              />
             ))}
           </ul>
         )}

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import {
-  updateCourse,
   createModule,
   updateModule,
   deleteModule,
@@ -11,6 +10,7 @@ import {
   deleteLesson,
 } from "@/lib/server-actions";
 import type { Category, Course, Module, Lesson } from "@/lib/types";
+import { CourseSettingsForm } from "./CourseSettingsForm";
 
 export const metadata = { title: "Editor de curso — Yoliti Academy" };
 
@@ -93,59 +93,11 @@ export default async function CourseEditorPage({
       {/* Datos del curso */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <h2 className="mb-4 font-bold text-secondary">Configuración del curso</h2>
-        <form action={updateCourse} className="grid gap-4 sm:grid-cols-2">
-          <input type="hidden" name="id" value={id} />
-          <div className="sm:col-span-2">
-            <label htmlFor="c-title" className="mb-1 block text-sm font-medium">Título *</label>
-            <input id="c-title" name="title" defaultValue={course.title} required className="input w-full" />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="c-subtitle" className="mb-1 block text-sm font-medium">Subtítulo</label>
-            <input id="c-subtitle" name="subtitle" defaultValue={course.subtitle ?? ""} className="input w-full" />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="c-desc" className="mb-1 block text-sm font-medium">Descripción</label>
-            <textarea id="c-desc" name="description" defaultValue={course.description ?? ""} className="textarea h-24 w-full" />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="c-cover" className="mb-1 block text-sm font-medium">URL imagen de portada</label>
-            <input id="c-cover" name="cover_url" type="url" defaultValue={course.cover_url ?? ""} className="input w-full" placeholder="https://..." />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="c-category" className="mb-1 block text-sm font-medium">Categoría</label>
-            <select id="c-category" name="category_id" defaultValue={course.category_id ?? ""} className="select w-full">
-              <option value="">Sin categoría</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="c-level" className="mb-1 block text-sm font-medium">Nivel</label>
-            <select id="c-level" name="level" defaultValue={course.level} className="select w-full">
-              <option value="principiante">Principiante</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="avanzado">Avanzado</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="c-status" className="mb-1 block text-sm font-medium">Estado</label>
-            <select id="c-status" name="status" defaultValue={course.status} className="select w-full">
-              <option value="borrador">Borrador</option>
-              <option value="publicado">Publicado</option>
-              <option value="archivado">Archivado</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="c-price" className="mb-1 block text-sm font-medium">Precio MXN (0 = gratis)</label>
-            <input id="c-price" name="price" type="number" min="0" step="1" defaultValue={course.price_cents / 100} className="input w-full" />
-          </div>
-          <div className="flex items-end">
-            <button className="btn btn-primary w-full">
-              <i className="fa-solid fa-floppy-disk" /> Guardar
-            </button>
-          </div>
-        </form>
+        <CourseSettingsForm
+          key={`${course.id}-${course.category_id}-${course.level}-${course.status}`}
+          course={course}
+          categories={categories}
+        />
       </section>
 
       {/* Módulos */}
