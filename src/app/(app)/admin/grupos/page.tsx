@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
-import { createGroup, deleteGroup } from "@/lib/server-actions";
+import { createGroup } from "@/lib/server-actions";
+import { DeleteGroupButton } from "./_components/DeleteGroupButton";
 import type { Group } from "@/lib/types";
 
 export const metadata = { title: "Grupos — Yoliti Academy" };
@@ -73,17 +74,7 @@ export default async function GruposPage() {
                     >
                       <i className="fa-solid fa-pen" /> Editar
                     </Link>
-                    <form action={deleteGroup}>
-                      <input type="hidden" name="id" value={g.id} />
-                      <button
-                        className="btn btn-error btn-sm btn-outline"
-                        onClick={(e) => {
-                          if (!confirm("¿Eliminar grupo?")) e.preventDefault();
-                        }}
-                      >
-                        <i className="fa-solid fa-trash" />
-                      </button>
-                    </form>
+                    <DeleteGroupButton id={g.id} />
                   </div>
                 </div>
               ))}
