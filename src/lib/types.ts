@@ -31,9 +31,8 @@ export interface Course {
   currency: string;
   status: CourseStatus;
   teacher_id: string;
-  category_id: string | null;
   created_at: string;
-  categories?: Category | null;
+  categories?: Category[];
 }
 
 export interface Module {

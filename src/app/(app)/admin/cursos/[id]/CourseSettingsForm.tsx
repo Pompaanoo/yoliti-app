@@ -1,22 +1,29 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type SyntheticEvent } from "react";
 import { updateCourse } from "@/lib/server-actions";
-import type { Category, Course } from "@/lib/types";
+import type { Category, Course, CourseLevel, CourseStatus } from "@/lib/types";
 
 interface Props {
   course: Course;
   categories: Pick<Category, "id" | "name" | "color">[];
+  selectedCategoryIds: string[];
 }
 
-export function CourseSettingsForm({ course, categories }: Props) {
-  const [categoryId, setCategoryId] = useState(course.category_id ?? "");
+export function CourseSettingsForm({ course, categories, selectedCategoryIds }: Props) {
+  const [selected, setSelected] = useState<string[]>(selectedCategoryIds);
   const [level, setLevel] = useState(course.level);
   const [status, setStatus] = useState(course.status);
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function toggle(id: string) {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }
+
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
@@ -29,9 +36,11 @@ export function CourseSettingsForm({ course, categories }: Props) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
       <input type="hidden" name="id" value={course.id} />
-      <input type="hidden" name="category_id" value={categoryId} />
       <input type="hidden" name="level" value={level} />
       <input type="hidden" name="status" value={status} />
+      {selected.map((catId) => (
+        <input key={catId} type="hidden" name="category_ids" value={catId} />
+      ))}
 
       <div className="sm:col-span-2">
         <label htmlFor="c-title" className="mb-1 block text-sm font-medium">Título *</label>
@@ -51,18 +60,35 @@ export function CourseSettingsForm({ course, categories }: Props) {
       </div>
 
       <div className="sm:col-span-2">
-        <label htmlFor="c-category" className="mb-1 block text-sm font-medium">Categoría</label>
-        <select
-          id="c-category"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          className="select w-full"
-        >
-          <option value="">Sin categoría</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
-          ))}
-        </select>
+        <label className="mb-2 block text-sm font-medium">Categorías</label>
+        {categories.length === 0 ? (
+          <p className="text-sm text-base-content/40">No hay categorías disponibles.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => {
+              const isSelected = selected.includes(cat.id);
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => toggle(cat.id)}
+                  className={`flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-sm font-medium transition-all ${
+                    isSelected
+                      ? "border-transparent text-white"
+                      : "border-base-300 bg-base-100 text-base-content/70 hover:border-base-400"
+                  }`}
+                  style={isSelected ? { backgroundColor: cat.color, borderColor: cat.color } : undefined}
+                >
+                  <span
+                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                    style={{ backgroundColor: isSelected ? "rgba(255,255,255,0.6)" : cat.color }}
+                  />
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div>
@@ -70,7 +96,7 @@ export function CourseSettingsForm({ course, categories }: Props) {
         <select
           id="c-level"
           value={level}
-          onChange={(e) => setLevel(e.target.value)}
+          onChange={(e) => setLevel(e.target.value as CourseLevel)}
           className="select w-full"
         >
           <option value="principiante">Principiante</option>
@@ -84,7 +110,7 @@ export function CourseSettingsForm({ course, categories }: Props) {
         <select
           id="c-status"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) => setStatus(e.target.value as CourseStatus)}
           className="select w-full"
         >
           <option value="borrador">Borrador</option>
@@ -108,7 +134,7 @@ export function CourseSettingsForm({ course, categories }: Props) {
           Guardar
         </button>
         {saved && (
-          <span className="text-success text-sm flex items-center gap-1">
+          <span className="flex items-center gap-1 text-sm text-success">
             <i className="fa-solid fa-check" /> Guardado
           </span>
         )}

@@ -9,19 +9,27 @@ export default async function CursosPage() {
 
   const { data } = await supabase
     .from("courses")
-    .select("*, categories(id, name, color)")
+    .select("*, course_categories(categories(id, name, color))")
     .eq("status", "publicado")
     .order("created_at", { ascending: false });
 
-  const courses = (data as Course[]) ?? [];
+  type RawCourse = Omit<Course, "categories"> & {
+    course_categories: { categories: Category }[];
+  };
+  const courses: Course[] = ((data as RawCourse[]) ?? []).map((c) => ({
+    ...c,
+    categories: (c.course_categories ?? []).map((cc) => cc.categories).filter(Boolean),
+  }));
 
   // Categorías únicas presentes en los cursos publicados para filtro
   const seenIds = new Set<string>();
   const usedCategories: Category[] = [];
   for (const c of courses) {
-    if (c.categories && !seenIds.has(c.categories.id)) {
-      seenIds.add(c.categories.id);
-      usedCategories.push(c.categories);
+    for (const cat of c.categories ?? []) {
+      if (!seenIds.has(cat.id)) {
+        seenIds.add(cat.id);
+        usedCategories.push(cat);
+      }
     }
   }
 

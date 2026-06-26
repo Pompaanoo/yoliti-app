@@ -68,7 +68,7 @@ export default async function CourseDetailPage({
             )}
           </div>
 
-          <span className="badge badge-primary mt-6">{c.level}</span>
+          <span className="badge badge-primary mt-6 capitalize text-white">{c.level}</span>
           <h1 className="mt-3 text-4xl font-extrabold text-secondary">
             {c.title}
           </h1>

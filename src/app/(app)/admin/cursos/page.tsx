@@ -54,8 +54,8 @@ export default async function CursosAdminPage() {
   const courses = (data as Course[]) ?? [];
 
   const STATUS_BADGE: Record<string, string> = {
-    publicado: "badge-success",
-    borrador: "badge-warning",
+    publicado: "badge-success text-white",
+    borrador: "badge-warning text-white",
     archivado: "badge-ghost",
   };
 
@@ -96,7 +96,7 @@ export default async function CursosAdminPage() {
                           : formatPrice(c.price_cents, c.currency)}
                       </td>
                       <td>
-                        <span className={`badge badge-sm ${STATUS_BADGE[c.status]}`}>
+                        <span className={`badge badge-sm capitalize ${STATUS_BADGE[c.status]}`}>
                           {c.status}
                         </span>
                       </td>

@@ -329,7 +329,7 @@ export async function updateCourse(formData: FormData) {
   const id = String(formData.get("id"));
   const priceMx = Number(formData.get("price") ?? 0);
 
-  const categoryId = String(formData.get("category_id") ?? "").trim() || null;
+  const categoryIds = formData.getAll("category_ids").map(String).filter(Boolean);
 
   await supabase
     .from("courses")
@@ -341,12 +341,19 @@ export async function updateCourse(formData: FormData) {
       level: String(formData.get("level")),
       price_cents: Math.round(priceMx * 100),
       status: String(formData.get("status")),
-      category_id: categoryId,
     })
     .eq("id", id);
 
+  await supabase.from("course_categories").delete().eq("course_id", id);
+  if (categoryIds.length > 0) {
+    await supabase.from("course_categories").insert(
+      categoryIds.map((catId) => ({ course_id: id, category_id: catId }))
+    );
+  }
+
   revalidatePath(`/admin/cursos/${id}`);
   revalidatePath("/admin/cursos");
+  revalidatePath("/cursos");
 }
 
 // ─── Categorías ───────────────────────────────────────────────

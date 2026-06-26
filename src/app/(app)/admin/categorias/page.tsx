@@ -31,12 +31,11 @@ export default async function CategoriasPage() {
 
   // Conteo de cursos por categoría
   const { data: counts } = await supabase
-    .from("courses")
-    .select("category_id")
-    .not("category_id", "is", null);
+    .from("course_categories")
+    .select("category_id");
   const courseCount: Record<string, number> = {};
   for (const c of counts ?? []) {
-    if (c.category_id) courseCount[c.category_id] = (courseCount[c.category_id] ?? 0) + 1;
+    courseCount[c.category_id] = (courseCount[c.category_id] ?? 0) + 1;
   }
 
   return (

@@ -171,7 +171,7 @@ export default async function MisCalificacionesPage() {
                         </td>
                         <td className="text-center">
                           <span
-                            className={`badge badge-sm ${
+                            className={`badge badge-sm text-white ${
                               a.score_pct >= 70
                                 ? "badge-success"
                                 : "badge-error"

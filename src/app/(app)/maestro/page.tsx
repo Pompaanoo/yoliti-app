@@ -26,8 +26,6 @@ async function createCourse(formData: FormData) {
 
   const priceMx = Number(formData.get("price") ?? 0);
 
-  const categoryId = String(formData.get("category_id") ?? "").trim() || null;
-
   await supabase.from("courses").insert({
     title,
     slug: `${slugify(title)}-${Math.random().toString(36).slice(2, 6)}`,
@@ -38,7 +36,6 @@ async function createCourse(formData: FormData) {
     currency: "mxn",
     status: String(formData.get("status") ?? "borrador"),
     teacher_id: profile.id,
-    category_id: categoryId,
   });
 
   revalidatePath("/maestro");
@@ -237,12 +234,12 @@ export default async function MaestroPage() {
                           {c.title}
                         </h3>
                         <span
-                          className={`badge badge-sm ${
+                          className={`badge badge-sm capitalize ${
                             c.status === "publicado"
-                              ? "badge-success"
+                              ? "badge-success text-white"
                               : c.status === "archivado"
                                 ? "badge-ghost"
-                                : "badge-warning"
+                                : "badge-warning text-white"
                           }`}
                         >
                           {c.status}
@@ -339,18 +336,7 @@ export default async function MaestroPage() {
                 placeholder="Descripción"
                 className="textarea textarea-bordered textarea-sm w-full"
               />
-              {categories.length > 0 && (
-                <select
-                  name="category_id"
-                  className="select select-bordered select-sm w-full"
-                  defaultValue=""
-                >
-                  <option value="">Sin categoría</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
-              )}
+
               <select
                 name="level"
                 className="select select-bordered select-sm w-full"

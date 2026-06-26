@@ -19,9 +19,9 @@ interface PaymentWithCourse extends Payment {
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  paid: "badge-success",
-  pending: "badge-warning",
-  failed: "badge-error",
+  paid: "badge-success text-white",
+  pending: "badge-warning text-white",
+  failed: "badge-error text-white",
   refunded: "badge-ghost",
 };
 
@@ -200,7 +200,7 @@ export default async function AlumnoDetailPage({
                     <td>
                       <span
                         className={`badge badge-sm capitalize ${
-                          e.status === "activo" ? "badge-success" : "badge-ghost"
+                          e.status === "activo" ? "badge-success text-white" : "badge-ghost"
                         }`}
                       >
                         {e.status}

@@ -4,9 +4,9 @@ import type { Course } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 
 const LEVEL_STYLES: Record<string, string> = {
-  principiante: "badge-success",
-  intermedio: "badge-warning",
-  avanzado: "badge-error",
+  principiante: "badge-success text-white",
+  intermedio: "badge-warning text-white",
+  avanzado: "badge-error text-white",
 };
 
 export default async function CourseCard({ course }: { course: Course }) {
@@ -30,17 +30,18 @@ export default async function CourseCard({ course }: { course: Course }) {
       </figure>
       <div className="card-body gap-3 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm`}>
+          <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm capitalize`}>
             {course.level}
           </span>
-          {course.categories && (
+          {course.categories?.map((cat) => (
             <span
+              key={cat.id}
               className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold text-white"
-              style={{ backgroundColor: course.categories.color }}
+              style={{ backgroundColor: cat.color }}
             >
-              {course.categories.name}
+              {cat.name}
             </span>
-          )}
+          ))}
         </div>
         <h3 className="card-title text-lg leading-snug group-hover:text-primary">
           {course.title}

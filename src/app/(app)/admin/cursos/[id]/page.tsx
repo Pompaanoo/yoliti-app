@@ -54,11 +54,13 @@ export default async function CourseEditorPage({
   if (!courseRaw) notFound();
   const course = courseRaw as Course;
 
-  const { data: categoriesRaw } = await supabase
-    .from("categories")
-    .select("id, name, color")
-    .order("name");
+  const [{ data: categoriesRaw }, { data: assignedRaw }] = await Promise.all([
+    supabase.from("categories").select("id, name, color").order("name"),
+    supabase.from("course_categories").select("category_id").eq("course_id", id),
+  ]);
+
   const categories = (categoriesRaw as Pick<Category, "id" | "name" | "color">[]) ?? [];
+  const selectedCategoryIds = (assignedRaw ?? []).map((r: { category_id: string }) => r.category_id);
 
   const { data: modulesRaw } = await supabase
     .from("modules")
@@ -81,7 +83,7 @@ export default async function CourseEditorPage({
         <div>
           <h1 className="text-2xl font-extrabold text-secondary">{course.title}</h1>
           <span
-            className={`badge badge-sm mt-1 ${
+            className={`badge badge-sm mt-1 capitalize text-white ${
               course.status === "publicado" ? "badge-success" : "badge-warning"
             }`}
           >
@@ -94,9 +96,10 @@ export default async function CourseEditorPage({
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <h2 className="mb-4 font-bold text-secondary">Configuración del curso</h2>
         <CourseSettingsForm
-          key={`${course.id}-${course.category_id}-${course.level}-${course.status}`}
+          key={`${course.id}-${[...selectedCategoryIds].sort().join(",")}-${course.level}-${course.status}`}
           course={course}
           categories={categories}
+          selectedCategoryIds={selectedCategoryIds}
         />
       </section>
 

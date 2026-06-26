@@ -222,7 +222,7 @@ export default async function EditGrupoPage({
                     <div>
                       <p className="text-sm font-medium">{c?.title}</p>
                       <span
-                        className={`badge badge-xs ${
+                        className={`badge badge-xs capitalize text-white ${
                           c?.status === "publicado" ? "badge-success" : "badge-warning"
                         }`}
                       >

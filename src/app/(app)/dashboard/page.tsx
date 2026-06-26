@@ -165,7 +165,7 @@ export default async function DashboardPage() {
                 <div className="card-body gap-3 p-5">
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">
-                      <span className="badge badge-primary badge-sm capitalize mb-1">
+                      <span className="badge badge-primary badge-sm capitalize text-white mb-1">
                         {c.level}
                       </span>
                       <h2 className="card-title text-base text-secondary leading-tight">
@@ -178,7 +178,7 @@ export default async function DashboardPage() {
                       )}
                     </div>
                     {c.pct === 100 && (
-                      <span className="badge badge-success badge-sm flex-shrink-0 gap-1">
+                      <span className="badge badge-success badge-sm flex-shrink-0 gap-1 text-white">
                         <i className="fa-solid fa-check text-[8px]" />
                         Completado
                       </span>
