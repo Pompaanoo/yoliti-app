@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
+import { STATUS_BADGE } from "@/lib/course-status";
 import Link from "next/link";
 import type { Category, Course } from "@/lib/types";
 
@@ -234,13 +235,7 @@ export default async function MaestroPage() {
                           {c.title}
                         </h3>
                         <span
-                          className={`badge badge-sm capitalize ${
-                            c.status === "publicado"
-                              ? "badge-success text-white"
-                              : c.status === "archivado"
-                                ? "badge-error text-white"
-                                : "badge-warning text-white"
-                          }`}
+                          className={`badge badge-sm capitalize ${STATUS_BADGE[c.status] ?? "badge-ghost"}`}
                         >
                           {c.status}
                         </span>

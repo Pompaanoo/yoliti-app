@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { STATUS_BADGE } from "@/lib/course-status";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import {
@@ -83,9 +84,7 @@ export default async function CourseEditorPage({
         <div>
           <h1 className="text-2xl font-extrabold text-secondary">{course.title}</h1>
           <span
-            className={`badge badge-sm mt-1 capitalize text-white ${
-              course.status === "publicado" ? "badge-success" : "badge-warning"
-            }`}
+            className={`badge badge-sm mt-1 capitalize ${STATUS_BADGE[course.status] ?? "badge-ghost"}`}
           >
             {course.status}
           </span>

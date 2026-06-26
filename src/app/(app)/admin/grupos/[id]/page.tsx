@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { STATUS_BADGE } from "@/lib/course-status";
 import { requireRole } from "@/lib/auth";
 import {
   updateGroup,
@@ -222,9 +223,7 @@ export default async function EditGrupoPage({
                     <div>
                       <p className="text-sm font-medium">{c?.title}</p>
                       <span
-                        className={`badge badge-xs capitalize text-white ${
-                          c?.status === "publicado" ? "badge-success" : "badge-warning"
-                        }`}
+                        className={`badge badge-xs capitalize ${STATUS_BADGE[c?.status ?? ""] ?? "badge-ghost"}`}
                       >
                         {c?.status}
                       </span>

@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
+import { STATUS_BADGE } from "@/lib/course-status";
 import type { Course } from "@/lib/types";
 import { TranslateAllButton } from "./TranslateAllButton";
 
@@ -102,11 +103,6 @@ export default async function CursosAdminPage() {
   const { data } = await query;
   const courses = (data as Course[]) ?? [];
 
-  const STATUS_BADGE: Record<string, string> = {
-    publicado: "badge-success text-white",
-    borrador: "badge-warning text-white",
-    archivado: "badge-error text-white",
-  };
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -210,6 +206,7 @@ export default async function CursosAdminPage() {
                 <select id="status" name="status" className="select select-sm w-full">
                   <option value="borrador">Borrador</option>
                   <option value="publicado">Publicado</option>
+                  <option value="privado">Privado</option>
                 </select>
               </div>
               <button className="btn btn-primary btn-sm btn-block">

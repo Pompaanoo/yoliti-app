@@ -117,6 +117,7 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
         >
           <option value="borrador">Borrador</option>
           <option value="publicado">Publicado</option>
+          <option value="privado">Privado</option>
           <option value="archivado">Archivado</option>
         </select>
       </div>

@@ -20,7 +20,7 @@ export default async function DashboardPage() {
     .select("status, courses(*)")
     .eq("user_id", user.id);
   const enrollments = (enrollmentsRaw as EnrollmentRow[] | null) ?? [];
-  const courses = enrollments.map((e) => e.courses);
+  const courses = enrollments.map((e) => e.courses).filter(Boolean) as Course[];
 
   // Progreso por curso
   const allLessonIds: string[] = [];

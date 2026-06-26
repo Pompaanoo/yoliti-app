@@ -9,7 +9,7 @@ export interface Profile {
 }
 
 export type CourseLevel = "principiante" | "intermedio" | "avanzado";
-export type CourseStatus = "borrador" | "publicado" | "archivado";
+export type CourseStatus = "borrador" | "publicado" | "archivado" | "privado";
 
 export interface Category {
   id: string;
