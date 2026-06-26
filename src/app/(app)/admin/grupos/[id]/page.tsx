@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { STATUS_BADGE } from "@/lib/course-status";
 import { GroupSettingsForm } from "./GroupSettingsForm";
 import { requireRole } from "@/lib/auth";
 import {
-  updateGroup,
   addStudentToGroup,
   removeStudentFromGroup,
   addCourseToGroup,
@@ -21,7 +21,11 @@ export default async function EditGrupoPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await requireRole(["maestro", "super_admin"]);
+  const [, t, ts] = await Promise.all([
+    requireRole(["maestro", "super_admin"]),
+    getTranslations("editGrupo"),
+    getTranslations("status"),
+  ]);
   const supabase = await createClient();
 
   const { data: groupRaw } = await supabase
@@ -72,25 +76,22 @@ export default async function EditGrupoPage({
         <h1 className="text-2xl font-extrabold text-secondary">{group.name}</h1>
       </div>
 
-      {/* Datos del grupo */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
-        <h2 className="mb-4 font-bold text-secondary">Datos del grupo</h2>
+        <h2 className="mb-4 font-bold text-secondary">{t("groupData")}</h2>
         <GroupSettingsForm group={group} />
       </section>
 
-      {/* Alumnos */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <h2 className="mb-4 font-bold text-secondary">
-          Alumnos{" "}
+          {t("students")}{" "}
           <span className="badge badge-primary ml-1">{group.group_students.length}</span>
         </h2>
 
-        {/* Agregar alumno */}
         {availableStudents.length > 0 ? (
           <form action={addStudentToGroup} className="mb-5 flex gap-2">
             <input type="hidden" name="group_id" value={id} />
             <select name="user_id" className="select select-sm flex-1" defaultValue="">
-              <option value="" disabled>Selecciona un alumno…</option>
+              <option value="" disabled>{t("selectStudent")}</option>
               {availableStudents.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.full_name ? `${s.full_name} — ${s.email}` : s.email}
@@ -98,19 +99,19 @@ export default async function EditGrupoPage({
               ))}
             </select>
             <button className="btn btn-primary btn-sm">
-              <i className="fa-solid fa-user-plus" /> Agregar
+              <i className="fa-solid fa-user-plus" /> {t("add")}
             </button>
           </form>
         ) : (
           <p className="mb-5 text-sm text-base-content/40">
             {memberIds.size === 0
-              ? "No hay alumnos registrados en la plataforma todavía."
-              : "Todos los alumnos registrados ya están en este grupo."}
+              ? t("noStudentsAvailable")
+              : t("allStudentsInGroup")}
           </p>
         )}
 
         {group.group_students.length === 0 ? (
-          <p className="text-sm text-base-content/50">No hay alumnos en este grupo.</p>
+          <p className="text-sm text-base-content/50">{t("noStudentsInGroup")}</p>
         ) : (
           <ul className="divide-y divide-base-200">
             {group.group_students.map((gs) => {
@@ -122,7 +123,7 @@ export default async function EditGrupoPage({
                       {(p?.full_name || "?").charAt(0).toUpperCase()}
                     </span>
                     <div>
-                      <p className="text-sm font-medium">{p?.full_name || "Sin nombre"}</p>
+                      <p className="text-sm font-medium">{p?.full_name || t("noName")}</p>
                       <p className="text-xs capitalize text-base-content/40">{p?.role}</p>
                     </div>
                   </div>
@@ -140,32 +141,29 @@ export default async function EditGrupoPage({
         )}
       </section>
 
-      {/* Cursos */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <h2 className="mb-4 font-bold text-secondary">
-          Cursos asignados{" "}
+          {t("assignedCourses")}{" "}
           <span className="badge badge-primary ml-1">{group.group_courses.length}</span>
         </h2>
 
-        {/* Agregar curso */}
         <form action={addCourseToGroup} className="mb-5 flex gap-2">
           <input type="hidden" name="group_id" value={id} />
           <select name="course_id" className="select select-sm flex-1" defaultValue="">
-            <option value="" disabled>Selecciona un curso…</option>
+            <option value="" disabled>{t("selectCourse")}</option>
             {availableCourses.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.title}{" "}
-                {c.status === "borrador" ? "(borrador)" : ""}
+                {c.title}{c.status === "borrador" ? ` ${t("draftLabel")}` : ""}
               </option>
             ))}
           </select>
           <button className="btn btn-primary btn-sm">
-            <i className="fa-solid fa-plus" /> Agregar
+            <i className="fa-solid fa-plus" /> {t("add")}
           </button>
         </form>
 
         {group.group_courses.length === 0 ? (
-          <p className="text-sm text-base-content/50">No hay cursos asignados.</p>
+          <p className="text-sm text-base-content/50">{t("noCourses")}</p>
         ) : (
           <ul className="divide-y divide-base-200">
             {group.group_courses.map((gc) => {
@@ -178,10 +176,8 @@ export default async function EditGrupoPage({
                     </span>
                     <div>
                       <p className="text-sm font-medium">{c?.title}</p>
-                      <span
-                        className={`badge badge-xs capitalize ${STATUS_BADGE[c?.status ?? ""] ?? "badge-ghost"}`}
-                      >
-                        {c?.status}
+                      <span className={`badge badge-xs capitalize ${STATUS_BADGE[c?.status ?? ""] ?? "badge-ghost"}`}>
+                        {c?.status ? ts(c.status) : ""}
                       </span>
                     </div>
                   </div>

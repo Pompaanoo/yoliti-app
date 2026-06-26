@@ -1,21 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { updateCategory, deleteCategory } from "@/lib/server-actions";
 import type { Category } from "@/lib/types";
 
-const PRESET_COLORS = [
-  { label: "Índigo",   value: "#6366f1" },
-  { label: "Violeta",  value: "#8b5cf6" },
-  { label: "Rosa",     value: "#ec4899" },
-  { label: "Rojo",     value: "#ef4444" },
-  { label: "Naranja",  value: "#f97316" },
-  { label: "Amarillo", value: "#eab308" },
-  { label: "Verde",    value: "#22c55e" },
-  { label: "Cian",     value: "#06b6d4" },
-  { label: "Azul",     value: "#3b82f6" },
-  { label: "Gris",     value: "#6b7280" },
-];
+const COLOR_VALUES = [
+  { key: "indigo",  value: "#6366f1" },
+  { key: "violet",  value: "#8b5cf6" },
+  { key: "pink",    value: "#ec4899" },
+  { key: "red",     value: "#ef4444" },
+  { key: "orange",  value: "#f97316" },
+  { key: "yellow",  value: "#eab308" },
+  { key: "green",   value: "#22c55e" },
+  { key: "cyan",    value: "#06b6d4" },
+  { key: "blue",    value: "#3b82f6" },
+  { key: "gray",    value: "#6b7280" },
+] as const;
 
 interface Props {
   cat: Category;
@@ -23,6 +24,8 @@ interface Props {
 }
 
 export function CategoryRow({ cat, courseCount }: Props) {
+  const t = useTranslations("adminCategorias");
+  const tc = useTranslations("colors");
   const [color, setColor] = useState(cat.color);
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -52,7 +55,7 @@ export function CategoryRow({ cat, courseCount }: Props) {
           name="name"
           defaultValue={cat.name}
           className="input input-bordered input-sm flex-1 min-w-32"
-          placeholder="Nombre (ES)"
+          placeholder={t("namePlaceholderES")}
           required
         />
 
@@ -60,7 +63,7 @@ export function CategoryRow({ cat, courseCount }: Props) {
           name="name_en"
           defaultValue={cat.name_en ?? ""}
           className="input input-bordered input-sm flex-1 min-w-32"
-          placeholder="Name (EN)"
+          placeholder={t("namePlaceholderEN")}
         />
 
         <select
@@ -68,20 +71,20 @@ export function CategoryRow({ cat, courseCount }: Props) {
           onChange={(e) => setColor(e.target.value)}
           className="select select-bordered select-sm w-36"
         >
-          {PRESET_COLORS.map((c) => (
+          {COLOR_VALUES.map((c) => (
             <option key={c.value} value={c.value}>
-              {c.label}
+              {tc(c.key)}
             </option>
           ))}
         </select>
 
         <span className="badge badge-ghost badge-sm whitespace-nowrap">
-          {courseCount} curso{courseCount !== 1 ? "s" : ""}
+          {t("coursesCount", { n: courseCount })}
         </span>
 
         {saved && (
           <span className="text-success text-xs flex items-center gap-1">
-            <i className="fa-solid fa-check" /> Guardado
+            <i className="fa-solid fa-check" /> {t("saved")}
           </span>
         )}
 
@@ -110,9 +113,8 @@ export function CategoryRow({ cat, courseCount }: Props) {
         <button
           type="submit"
           className="btn btn-ghost btn-xs text-error"
-          title="Eliminar (los cursos quedarán sin categoría)"
         >
-          <i className="fa-solid fa-trash text-[10px]" /> Eliminar
+          <i className="fa-solid fa-trash text-[10px]" /> {t("delete")}
         </button>
       </form>
     </li>

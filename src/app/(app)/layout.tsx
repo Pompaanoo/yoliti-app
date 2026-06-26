@@ -1,42 +1,46 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getProfile } from "@/lib/auth";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const profile = await getProfile();
+  const [profile, t] = await Promise.all([
+    getProfile(),
+    getTranslations("app"),
+  ]);
   if (!profile) redirect("/login");
 
-  const isStaff =
-    profile.role === "maestro" || profile.role === "super_admin";
+  const isStaff = profile.role === "maestro" || profile.role === "super_admin";
   const isAdmin = profile.role === "super_admin";
 
   const links = [
-    { href: "/dashboard", label: "Mi aprendizaje", icon: "fa-graduation-cap" },
-    { href: "/mis-calificaciones", label: "Mis calificaciones", icon: "fa-chart-bar" },
+    { href: "/dashboard",          label: t("myLearning"),        icon: "fa-graduation-cap" },
+    { href: "/mis-calificaciones", label: t("myGrades"),          icon: "fa-chart-bar" },
   ];
 
   if (isStaff) {
     links.push(
-      { href: "/admin/cursos", label: "Gestión de cursos", icon: "fa-book-open" },
-      { href: "/admin/grupos", label: "Grupos", icon: "fa-people-group" }
+      { href: "/admin/cursos",  label: t("courseManagement"), icon: "fa-book-open" },
+      { href: "/admin/grupos",  label: t("groups"),            icon: "fa-people-group" }
     );
   }
 
   if (isAdmin) {
     links.push(
-      { href: "/admin/alumnos", label: "Alumnos", icon: "fa-user-graduate" },
-      { href: "/admin/progreso", label: "Progreso alumnos", icon: "fa-chart-line" },
-      { href: "/admin/categorias", label: "Categorías", icon: "fa-tags" },
-      { href: "/admin", label: "Administración", icon: "fa-shield-halved" }
+      { href: "/admin/alumnos",    label: t("students"),         icon: "fa-user-graduate" },
+      { href: "/admin/progreso",   label: t("studentProgress"),  icon: "fa-chart-line" },
+      { href: "/admin/categorias", label: t("categories"),       icon: "fa-tags" },
+      { href: "/admin",            label: t("administration"),   icon: "fa-shield-halved" }
     );
   }
 
-  links.push({ href: "/cuenta", label: "Mi cuenta", icon: "fa-circle-user" });
+  links.push({ href: "/cuenta", label: t("myAccount"), icon: "fa-circle-user" });
 
   return (
     <div className="flex h-screen overflow-hidden bg-base-200">
@@ -78,11 +82,14 @@ export default async function AppLayout({
               </p>
             </div>
           </div>
-          <form action="/auth/sign-out" method="post" className="mt-3">
-            <button className="btn btn-ghost btn-sm btn-block justify-start text-error">
-              <i className="fa-solid fa-right-from-bracket" /> Cerrar sesión
-            </button>
-          </form>
+          <div className="mt-3 flex items-center justify-between">
+            <LanguageSwitcher />
+            <form action="/auth/sign-out" method="post">
+              <button className="btn btn-ghost btn-sm text-error" title={t("signOut")}>
+                <i className="fa-solid fa-right-from-bracket" />
+              </button>
+            </form>
+          </div>
         </div>
       </aside>
 
@@ -92,29 +99,32 @@ export default async function AppLayout({
           <Link href="/" className="flex items-center">
             <Logo className="h-7" />
           </Link>
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
-              <i className="fa-solid fa-bars" />
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu z-50 mt-2 w-52 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl"
-            >
-              {links.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href}>
-                    <i className={`fa-solid ${l.icon} w-4`} /> {l.label}
-                  </Link>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
+                <i className="fa-solid fa-bars" />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu z-50 mt-2 w-52 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl"
+              >
+                {links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href}>
+                      <i className={`fa-solid ${l.icon} w-4`} /> {l.label}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <form action="/auth/sign-out" method="post">
+                    <button className="text-error">
+                      <i className="fa-solid fa-right-from-bracket w-4" /> {t("exit")}
+                    </button>
+                  </form>
                 </li>
-              ))}
-              <li>
-                <form action="/auth/sign-out" method="post">
-                  <button className="text-error">
-                    <i className="fa-solid fa-right-from-bracket w-4" /> Salir
-                  </button>
-                </form>
-              </li>
-            </ul>
+              </ul>
+            </div>
           </div>
         </header>
 

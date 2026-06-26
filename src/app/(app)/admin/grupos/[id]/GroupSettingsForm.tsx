@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { updateGroup } from "@/lib/server-actions";
 import type { Group } from "@/lib/types";
 
 export function GroupSettingsForm({ group }: { group: Group }) {
+  const t = useTranslations("editGrupo");
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -22,7 +24,7 @@ export function GroupSettingsForm({ group }: { group: Group }) {
     <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
       <input type="hidden" name="id" value={group.id} />
       <div className="sm:col-span-2">
-        <label htmlFor="name" className="mb-1 block text-sm font-medium">Nombre</label>
+        <label htmlFor="name" className="mb-1 block text-sm font-medium">{t("nameLabel")}</label>
         <input
           id="name"
           name="name"
@@ -32,7 +34,7 @@ export function GroupSettingsForm({ group }: { group: Group }) {
         />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="description" className="mb-1 block text-sm font-medium">Descripción</label>
+        <label htmlFor="description" className="mb-1 block text-sm font-medium">{t("descriptionLabel")}</label>
         <textarea
           id="description"
           name="description"
@@ -41,7 +43,7 @@ export function GroupSettingsForm({ group }: { group: Group }) {
         />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="image_url" className="mb-1 block text-sm font-medium">URL de imagen</label>
+        <label htmlFor="image_url" className="mb-1 block text-sm font-medium">{t("imageLabel")}</label>
         <input
           id="image_url"
           name="image_url"
@@ -66,11 +68,11 @@ export function GroupSettingsForm({ group }: { group: Group }) {
           ) : (
             <i className="fa-solid fa-floppy-disk" />
           )}{" "}
-          Guardar cambios
+          {t("saveChanges")}
         </button>
         {saved && (
           <span className="flex items-center gap-1 text-sm text-success">
-            <i className="fa-solid fa-check" /> Guardado
+            <i className="fa-solid fa-check" /> {t("saved")}
           </span>
         )}
       </div>

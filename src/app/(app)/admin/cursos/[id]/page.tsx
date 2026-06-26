@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { STATUS_BADGE } from "@/lib/course-status";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
@@ -24,15 +25,6 @@ const CONTENT_TYPE_ICONS: Record<string, string> = {
   pdf: "fa-file-pdf",
 };
 
-const CONTENT_TYPE_LABELS: Record<string, string> = {
-  video: "Video",
-  texto: "Texto",
-  quiz: "Quiz",
-  dragdrop: "Drag & Drop",
-  flashcards: "Flashcards",
-  pdf: "PDF",
-};
-
 interface ModuleWithLessons extends Module {
   lessons: Lesson[];
 }
@@ -43,7 +35,11 @@ export default async function CourseEditorPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await requireRole(["maestro", "super_admin"]);
+  const [, t, ts] = await Promise.all([
+    requireRole(["maestro", "super_admin"]),
+    getTranslations("editCurso"),
+    getTranslations("status"),
+  ]);
   const supabase = await createClient();
 
   const { data: courseRaw } = await supabase
@@ -83,17 +79,14 @@ export default async function CourseEditorPage({
         </Link>
         <div>
           <h1 className="text-2xl font-extrabold text-secondary">{course.title}</h1>
-          <span
-            className={`badge badge-sm mt-1 capitalize ${STATUS_BADGE[course.status] ?? "badge-ghost"}`}
-          >
-            {course.status}
+          <span className={`badge badge-sm mt-1 capitalize ${STATUS_BADGE[course.status] ?? "badge-ghost"}`}>
+            {ts(course.status)}
           </span>
         </div>
       </div>
 
-      {/* Datos del curso */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
-        <h2 className="mb-4 font-bold text-secondary">Configuración del curso</h2>
+        <h2 className="mb-4 font-bold text-secondary">{t("settings")}</h2>
         <CourseSettingsForm
           key={`${course.id}-${[...selectedCategoryIds].sort().join(",")}-${course.level}-${course.status}`}
           course={course}
@@ -102,11 +95,10 @@ export default async function CourseEditorPage({
         />
       </section>
 
-      {/* Módulos */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-bold text-secondary">
-            Módulos{" "}
+            {t("modules")}{" "}
             <span className="badge badge-primary ml-1">{modules.length}</span>
           </h2>
         </div>
@@ -148,7 +140,7 @@ export default async function CourseEditorPage({
               {/* Capítulos del módulo */}
               <div className="border-t border-base-300 px-4 pb-4 pt-3">
                 {m.lessons.length === 0 ? (
-                  <p className="mb-3 text-xs text-base-content/40">Sin capítulos.</p>
+                  <p className="mb-3 text-xs text-base-content/40">{t("noChapters")}</p>
                 ) : (
                   <ul className="mb-3 space-y-1.5">
                     {m.lessons.map((l, li) => (
@@ -166,7 +158,7 @@ export default async function CourseEditorPage({
                           {l.title}
                         </span>
                         <span className="badge badge-ghost badge-xs">
-                          {CONTENT_TYPE_LABELS[l.content_type] ?? l.content_type}
+                          {l.content_type}
                         </span>
                         <Link
                           href={`/admin/capitulos/${l.id}`}
@@ -186,14 +178,13 @@ export default async function CourseEditorPage({
                   </ul>
                 )}
 
-                {/* Agregar capítulo */}
                 <form action={createLesson} className="flex gap-2">
                   <input type="hidden" name="module_id" value={m.id} />
                   <input type="hidden" name="course_id" value={id} />
                   <input
                     name="title"
                     required
-                    placeholder="Título del capítulo..."
+                    placeholder={t("chapterPlaceholder")}
                     className="input input-xs flex-1 bg-base-100"
                   />
                   <select name="content_type" className="select select-xs bg-base-100">
@@ -213,17 +204,16 @@ export default async function CourseEditorPage({
           ))}
         </div>
 
-        {/* Agregar módulo */}
         <form action={createModule} className="mt-4 flex gap-2">
           <input type="hidden" name="course_id" value={id} />
           <input
             name="title"
             required
-            placeholder="Nombre del nuevo módulo..."
+            placeholder={t("modulePlaceholder")}
             className="input input-sm flex-1"
           />
           <button className="btn btn-outline btn-primary btn-sm">
-            <i className="fa-solid fa-plus" /> Agregar módulo
+            <i className="fa-solid fa-plus" /> {t("addModule")}
           </button>
         </form>
       </section>

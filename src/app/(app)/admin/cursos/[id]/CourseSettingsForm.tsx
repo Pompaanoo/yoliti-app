@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, type SyntheticEvent } from "react";
+import { useTranslations } from "next-intl";
 import { updateCourse } from "@/lib/server-actions";
 import type { Category, Course, CourseLevel, CourseStatus } from "@/lib/types";
 
@@ -11,6 +12,10 @@ interface Props {
 }
 
 export function CourseSettingsForm({ course, categories, selectedCategoryIds }: Props) {
+  const t = useTranslations("editCurso");
+  const tl = useTranslations("levels");
+  const ts = useTranslations("status");
+
   const [selected, setSelected] = useState<string[]>(selectedCategoryIds);
   const [level, setLevel] = useState(course.level);
   const [status, setStatus] = useState(course.status);
@@ -45,26 +50,26 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
       ))}
 
       <div className="sm:col-span-2">
-        <label htmlFor="c-title" className="mb-1 block text-sm font-medium">Título *</label>
+        <label htmlFor="c-title" className="mb-1 block text-sm font-medium">{t("titleLabel")}</label>
         <input id="c-title" name="title" defaultValue={course.title} required className="input w-full" />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="c-subtitle" className="mb-1 block text-sm font-medium">Subtítulo</label>
+        <label htmlFor="c-subtitle" className="mb-1 block text-sm font-medium">{t("subtitleLabel")}</label>
         <input id="c-subtitle" name="subtitle" defaultValue={course.subtitle ?? ""} className="input w-full" />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="c-desc" className="mb-1 block text-sm font-medium">Descripción</label>
+        <label htmlFor="c-desc" className="mb-1 block text-sm font-medium">{t("descriptionLabel")}</label>
         <textarea id="c-desc" name="description" defaultValue={course.description ?? ""} className="textarea h-24 w-full" />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="c-cover" className="mb-1 block text-sm font-medium">URL imagen de portada</label>
+        <label htmlFor="c-cover" className="mb-1 block text-sm font-medium">{t("coverLabel")}</label>
         <input id="c-cover" name="cover_url" type="url" defaultValue={course.cover_url ?? ""} className="input w-full" placeholder="https://..." />
       </div>
 
       <div className="sm:col-span-2">
-        <label className="mb-2 block text-sm font-medium">Categorías</label>
+        <label className="mb-2 block text-sm font-medium">{t("categoriesLabel")}</label>
         {categories.length === 0 ? (
-          <p className="text-sm text-base-content/40">No hay categorías disponibles.</p>
+          <p className="text-sm text-base-content/40">{t("noCategories")}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => {
@@ -94,36 +99,36 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
       </div>
 
       <div>
-        <label htmlFor="c-level" className="mb-1 block text-sm font-medium">Nivel</label>
+        <label htmlFor="c-level" className="mb-1 block text-sm font-medium">{t("levelLabel")}</label>
         <select
           id="c-level"
           value={level}
           onChange={(e) => setLevel(e.target.value as CourseLevel)}
           className="select w-full"
         >
-          <option value="principiante">Principiante</option>
-          <option value="intermedio">Intermedio</option>
-          <option value="avanzado">Avanzado</option>
+          <option value="principiante">{tl("principiante")}</option>
+          <option value="intermedio">{tl("intermedio")}</option>
+          <option value="avanzado">{tl("avanzado")}</option>
         </select>
       </div>
 
       <div>
-        <label htmlFor="c-status" className="mb-1 block text-sm font-medium">Estado</label>
+        <label htmlFor="c-status" className="mb-1 block text-sm font-medium">{t("statusLabel")}</label>
         <select
           id="c-status"
           value={status}
           onChange={(e) => setStatus(e.target.value as CourseStatus)}
           className="select w-full"
         >
-          <option value="borrador">Borrador</option>
-          <option value="publicado">Publicado</option>
-          <option value="privado">Privado</option>
-          <option value="archivado">Archivado</option>
+          <option value="borrador">{ts("borrador")}</option>
+          <option value="publicado">{ts("publicado")}</option>
+          <option value="privado">{ts("privado")}</option>
+          <option value="archivado">{ts("archivado")}</option>
         </select>
       </div>
 
       <div>
-        <label htmlFor="c-price" className="mb-1 block text-sm font-medium">Precio (0 = gratis)</label>
+        <label htmlFor="c-price" className="mb-1 block text-sm font-medium">{t("priceLabel")}</label>
         <div className="flex gap-2">
           <select
             value={currency}
@@ -137,10 +142,9 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
         </div>
       </div>
 
-      {/* English translations */}
       <div className="sm:col-span-2 border-t border-base-300 pt-4">
         <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-base-content/60">
-          <i className="fa-solid fa-language" /> Traducción en inglés (opcional)
+          <i className="fa-solid fa-language" /> {t("translationsSection")}
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -165,11 +169,11 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
           ) : (
             <i className="fa-solid fa-floppy-disk" />
           )}{" "}
-          Guardar
+          {t("save")}
         </button>
         {saved && (
           <span className="flex items-center gap-1 text-sm text-success">
-            <i className="fa-solid fa-check" /> Guardado
+            <i className="fa-solid fa-check" /> {t("saved")}
           </span>
         )}
       </div>
