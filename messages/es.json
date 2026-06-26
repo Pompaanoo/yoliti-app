@@ -23,6 +23,11 @@
     "viewAll": "Ver todos",
     "readSuffix": "min de lectura"
   },
+  "levels": {
+    "principiante": "Principiante",
+    "intermedio": "Intermedio",
+    "avanzado": "Avanzado"
+  },
   "footer": {
     "tagline": "Aprendizaje con propósito: bienestar, inteligencia emocional y comunicación clínica para profesionales de habla hispana.",
     "explore": "Explorar",

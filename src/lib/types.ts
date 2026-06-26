@@ -16,6 +16,7 @@ export interface Category {
   name: string;
   slug: string;
   color: string;
+  name_en?: string | null;
   created_at: string;
 }
 

@@ -23,6 +23,11 @@
     "viewAll": "View all",
     "readSuffix": "min read"
   },
+  "levels": {
+    "principiante": "Beginner",
+    "intermedio": "Intermediate",
+    "avanzado": "Advanced"
+  },
   "footer": {
     "tagline": "Purpose-driven learning: wellbeing, emotional intelligence, and clinical communication for Spanish-speaking professionals.",
     "explore": "Explore",

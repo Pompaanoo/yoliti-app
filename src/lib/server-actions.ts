@@ -482,9 +482,10 @@ export async function updateCategory(formData: FormData) {
   const id = String(formData.get("id"));
   const name = String(formData.get("name") ?? "").trim();
   const color = String(formData.get("color") ?? "#6366f1");
+  const name_en = String(formData.get("name_en") ?? "").trim() || null;
   if (!id || !name) return;
 
-  await supabase.from("categories").update({ name, color }).eq("id", id);
+  await supabase.from("categories").update({ name, color, name_en }).eq("id", id);
   revalidatePath("/admin/categorias");
 }
 

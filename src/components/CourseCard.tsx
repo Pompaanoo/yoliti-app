@@ -13,6 +13,7 @@ const LEVEL_STYLES: Record<string, string> = {
 
 export default function CourseCard({ course }: { course: Course }) {
   const t = useTranslations("common");
+  const tl = useTranslations("levels");
   return (
     <Link
       href={`/cursos/${course.slug}`}
@@ -32,8 +33,8 @@ export default function CourseCard({ course }: { course: Course }) {
       </figure>
       <div className="card-body gap-3 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm capitalize`}>
-            {course.level}
+          <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm`}>
+            {tl(course.level)}
           </span>
           {course.categories?.map((cat) => (
             <span

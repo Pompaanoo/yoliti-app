@@ -14,7 +14,7 @@ export default async function CursosPage() {
 
   const { data } = await supabase
     .from("courses")
-    .select("*, course_categories(categories(id, name, color))")
+    .select("*, course_categories(categories(id, name, name_en, color, slug, created_at))")
     .eq("status", "publicado")
     .order("created_at", { ascending: false });
 
@@ -22,11 +22,16 @@ export default async function CursosPage() {
     course_categories: { categories: Category }[];
   };
   const en = locale === "en";
+
+  function translateCat(cat: Category): Category {
+    return en && cat.name_en ? { ...cat, name: cat.name_en } : cat;
+  }
+
   const courses: Course[] = ((data as RawCourse[]) ?? []).map((c) => ({
     ...c,
     title: (en && c.title_en) || c.title,
     subtitle: (en && c.subtitle_en) || c.subtitle,
-    categories: (c.course_categories ?? []).map((cc) => cc.categories).filter(Boolean),
+    categories: (c.course_categories ?? []).map((cc) => translateCat(cc.categories)).filter(Boolean),
   }));
 
   const seenIds = new Set<string>();
@@ -35,7 +40,7 @@ export default async function CursosPage() {
     for (const cat of c.categories ?? []) {
       if (!seenIds.has(cat.id)) {
         seenIds.add(cat.id);
-        usedCategories.push(cat);
+        usedCategories.push(cat); // already translated via translateCat above
       }
     }
   }

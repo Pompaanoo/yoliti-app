@@ -52,7 +52,15 @@ export function CategoryRow({ cat, courseCount }: Props) {
           name="name"
           defaultValue={cat.name}
           className="input input-bordered input-sm flex-1 min-w-32"
+          placeholder="Nombre (ES)"
           required
+        />
+
+        <input
+          name="name_en"
+          defaultValue={cat.name_en ?? ""}
+          className="input input-bordered input-sm flex-1 min-w-32"
+          placeholder="Name (EN)"
         />
 
         <select
