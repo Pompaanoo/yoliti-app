@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import type { Course } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 
@@ -9,8 +11,8 @@ const LEVEL_STYLES: Record<string, string> = {
   avanzado: "badge-error text-white",
 };
 
-export default async function CourseCard({ course }: { course: Course }) {
-  const t = await getTranslations("common");
+export default function CourseCard({ course }: { course: Course }) {
+  const t = useTranslations("common");
   return (
     <Link
       href={`/cursos/${course.slug}`}

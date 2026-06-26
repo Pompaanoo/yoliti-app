@@ -14,6 +14,7 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
   const [selected, setSelected] = useState<string[]>(selectedCategoryIds);
   const [level, setLevel] = useState(course.level);
   const [status, setStatus] = useState(course.status);
+  const [currency, setCurrency] = useState(course.currency ?? "usd");
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -38,6 +39,7 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
       <input type="hidden" name="id" value={course.id} />
       <input type="hidden" name="level" value={level} />
       <input type="hidden" name="status" value={status} />
+      <input type="hidden" name="currency" value={currency} />
       {selected.map((catId) => (
         <input key={catId} type="hidden" name="category_ids" value={catId} />
       ))}
@@ -120,8 +122,39 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
       </div>
 
       <div>
-        <label htmlFor="c-price" className="mb-1 block text-sm font-medium">Precio MXN (0 = gratis)</label>
-        <input id="c-price" name="price" type="number" min="0" step="1" defaultValue={course.price_cents / 100} className="input w-full" />
+        <label htmlFor="c-price" className="mb-1 block text-sm font-medium">Precio (0 = gratis)</label>
+        <div className="flex gap-2">
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="select w-28 shrink-0"
+          >
+            <option value="usd">USD</option>
+            <option value="mxn">MXN</option>
+          </select>
+          <input id="c-price" name="price" type="number" min="0" step="1" defaultValue={course.price_cents / 100} className="input flex-1" />
+        </div>
+      </div>
+
+      {/* English translations */}
+      <div className="sm:col-span-2 border-t border-base-300 pt-4">
+        <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-base-content/60">
+          <i className="fa-solid fa-language" /> Traducción en inglés (opcional)
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label htmlFor="c-title-en" className="mb-1 block text-sm font-medium">Title (EN)</label>
+            <input id="c-title-en" name="title_en" defaultValue={course.title_en ?? ""} className="input w-full" placeholder="English title…" />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="c-subtitle-en" className="mb-1 block text-sm font-medium">Subtitle (EN)</label>
+            <input id="c-subtitle-en" name="subtitle_en" defaultValue={course.subtitle_en ?? ""} className="input w-full" placeholder="English subtitle…" />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="c-desc-en" className="mb-1 block text-sm font-medium">Description (EN)</label>
+            <textarea id="c-desc-en" name="description_en" defaultValue={course.description_en ?? ""} className="textarea h-24 w-full" placeholder="English description…" />
+          </div>
+        </div>
       </div>
 
       <div className="flex items-end gap-3">

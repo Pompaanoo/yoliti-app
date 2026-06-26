@@ -1,10 +1,12 @@
-// Utilidades puras de formato — SIN secretos.
-// Seguras de importar tanto en componentes de servidor como de cliente.
-
-/** Formatea centavos a una cadena tipo "$499.00 MXN". */
-export function formatPrice(cents: number, currency = "mxn") {
-  return new Intl.NumberFormat("es-MX", {
+/** Formatea centavos a "USD 6,900" — sin decimales para precios redondos. */
+export function formatPrice(cents: number, currency = "usd") {
+  const amount = cents / 100;
+  const hasDecimals = amount % 1 !== 0;
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency.toUpperCase(),
-  }).format(cents / 100);
+    minimumFractionDigits: hasDecimals ? 2 : 0,
+    maximumFractionDigits: hasDecimals ? 2 : 0,
+    currencyDisplay: "code",
+  }).format(amount);
 }

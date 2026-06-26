@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import CourseCard from "@/components/CourseCard";
 import { POSTS, CATEGORY_BADGE, CATEGORY_LABEL } from "@/lib/blog";
@@ -15,16 +15,24 @@ const FEATURE_ICONS = [
 ];
 
 export default async function HomePage() {
-  const t = await getTranslations("home");
-  const c = await getTranslations("common");
-  const supabase = await createClient();
+  const [t, c, locale, supabase] = await Promise.all([
+    getTranslations("home"),
+    getTranslations("common"),
+    getLocale(),
+    createClient(),
+  ]);
   const { data } = await supabase
     .from("courses")
     .select("*")
     .eq("status", "publicado")
     .order("created_at", { ascending: false })
     .limit(3);
-  const courses = (data as Course[]) ?? [];
+  const en = locale === "en";
+  const courses = ((data as Course[]) ?? []).map((course) => ({
+    ...course,
+    title: (en && course.title_en) || course.title,
+    subtitle: (en && course.subtitle_en) || course.subtitle,
+  }));
   const recentPosts = POSTS.slice(0, 3);
 
   const statLabels = t.raw("statsLabels") as string[];
@@ -171,8 +179,8 @@ export default async function HomePage() {
           </div>
           {courses.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-3">
-              {courses.map((c) => (
-                <CourseCard key={c.id} course={c} />
+              {courses.map((course) => (
+                <CourseCard key={course.id} course={course} />
               ))}
             </div>
           ) : (

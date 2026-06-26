@@ -33,12 +33,16 @@ export interface Course {
   teacher_id: string;
   created_at: string;
   categories?: Category[];
+  title_en?: string | null;
+  subtitle_en?: string | null;
+  description_en?: string | null;
 }
 
 export interface Module {
   id: string;
   course_id: string;
   title: string;
+  title_en?: string | null;
   position: number;
 }
 
@@ -95,12 +99,14 @@ export interface Lesson {
   id: string;
   module_id: string;
   title: string;
+  title_en?: string | null;
   video_url: string | null;
   content: string | null;
   duration_minutes: number | null;
   position: number;
   content_type: LessonType;
   content_data: LessonContentData | null;
+  content_en?: LessonContentData | null;
 }
 
 export interface Enrollment {

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { markLessonProgress, checkAndIssueCertificate } from "@/lib/server-actions";
 import ChapterViewer from "./ChapterViewer";
 import type { Lesson, Module } from "@/lib/types";
@@ -30,6 +31,7 @@ export default function LessonPlayer({
   modules: ModuleWithLessons[];
   completedIds: Set<string>;
 }) {
+  const t = useTranslations("course");
   const allLessons = modules.flatMap((m) =>
     [...m.lessons].sort((a, b) => a.position - b.position)
   );
@@ -52,10 +54,7 @@ export default function LessonPlayer({
     }
     startTransition(async () => {
       await markLessonProgress(lessonId, pct);
-      if (
-        newCompleted.size >= allLessons.length &&
-        allLessons.length > 0
-      ) {
+      if (newCompleted.size >= allLessons.length && allLessons.length > 0) {
         const code = await checkAndIssueCertificate(courseId);
         if (code) setCertificateCode(code);
       }
@@ -76,7 +75,7 @@ export default function LessonPlayer({
 
   return (
     <>
-      {/* Modal de certificado */}
+      {/* Certificate modal */}
       {certificateCode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="rounded-box max-w-sm w-full bg-base-100 p-8 text-center shadow-2xl">
@@ -84,10 +83,10 @@ export default function LessonPlayer({
               <i className="fa-solid fa-certificate text-4xl" />
             </div>
             <h2 className="text-2xl font-extrabold text-secondary">
-              ¡Curso completado!
+              {t("courseCompleted")}
             </h2>
             <p className="mt-2 text-sm text-base-content/60">
-              Felicidades. Tu certificado ha sido emitido.
+              {t("certificateIssued")}
             </p>
             <div className="mt-4 flex flex-col gap-2">
               <Link
@@ -96,13 +95,13 @@ export default function LessonPlayer({
                 target="_blank"
               >
                 <i className="fa-solid fa-award" />
-                Ver mi certificado
+                {t("viewCertificate")}
               </Link>
               <button
                 onClick={() => setCertificateCode(null)}
                 className="btn btn-ghost btn-sm"
               >
-                Cerrar
+                {t("close")}
               </button>
             </div>
           </div>
@@ -121,13 +120,13 @@ export default function LessonPlayer({
               href="/dashboard"
               className="text-xs text-base-content/50 hover:text-primary"
             >
-              <i className="fa-solid fa-arrow-left" /> Mis cursos
+              <i className="fa-solid fa-arrow-left" /> {t("myCourses")}
             </Link>
             <h2 className="mt-1 truncate font-bold text-secondary">{courseTitle}</h2>
             {allLessons.length > 0 && (
               <div className="mt-2">
                 <div className="mb-1 flex justify-between text-xs text-base-content/50">
-                  <span>Progreso</span>
+                  <span>{t("progress")}</span>
                   <span>{courseProgress}%</span>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-base-300">
@@ -159,7 +158,7 @@ export default function LessonPlayer({
                     {mLessons.length === 0 ? (
                       <li className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-base-content/40">
                         <i className="fa-solid fa-lock text-xs" />
-                        <span>Contenido para miembros</span>
+                        <span>{t("membersContent")}</span>
                       </li>
                     ) : (
                       mLessons.map((l) => {
@@ -198,13 +197,13 @@ export default function LessonPlayer({
             })}
             {modules.length === 0 && (
               <p className="p-4 text-sm text-base-content/50">
-                Este curso aún no tiene lecciones.
+                {t("noLessons")}
               </p>
             )}
           </div>
         </aside>
 
-        {/* Contenido principal */}
+        {/* Main content */}
         <div className="flex flex-1 flex-col overflow-hidden">
           <header className="flex items-center gap-3 border-b border-base-300 px-4 py-3">
             <button
@@ -214,11 +213,11 @@ export default function LessonPlayer({
               <i className="fa-solid fa-table-columns" />
             </button>
             <h1 className="flex-1 truncate font-semibold">
-              {active?.title ?? "Selecciona un capítulo"}
+              {active?.title ?? t("selectChapter")}
             </h1>
             {active && localCompleted.has(active.id) && (
               <span className="flex items-center gap-1 text-xs text-success">
-                <i className="fa-solid fa-circle-check" /> Completado
+                <i className="fa-solid fa-circle-check" /> {t("completed")}
               </span>
             )}
           </header>
@@ -227,12 +226,11 @@ export default function LessonPlayer({
             {active ? (
               <div className="mx-auto max-w-3xl">
                 <ChapterViewer lesson={active} onComplete={handleComplete} />
-
                 {allLessons.findIndex((l) => l.id === activeId) <
                   allLessons.length - 1 && (
                   <div className="mt-6 flex justify-end">
                     <button onClick={goNext} className="btn btn-primary btn-sm">
-                      Siguiente capítulo{" "}
+                      {t("nextChapter")}{" "}
                       <i className="fa-solid fa-arrow-right" />
                     </button>
                   </div>
@@ -242,7 +240,7 @@ export default function LessonPlayer({
               <div className="flex h-full items-center justify-center text-base-content/30">
                 <div className="text-center">
                   <i className="fa-solid fa-book-open mb-3 text-4xl" />
-                  <p>Selecciona un capítulo para empezar</p>
+                  <p>{t("selectChapterToStart")}</p>
                 </div>
               </div>
             )}

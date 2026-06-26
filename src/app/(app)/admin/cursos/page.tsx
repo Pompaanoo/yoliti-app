@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
 import type { Course } from "@/lib/types";
+import { TranslateAllButton } from "./TranslateAllButton";
 
 export const metadata = { title: "Gestión de cursos — Yoliti Academy" };
 
@@ -20,20 +21,68 @@ async function createCourse(formData: FormData) {
   "use server";
   const profile = await requireRole(["maestro", "super_admin"]);
   const supabase = await createClient();
-  const title = String(formData.get("title") ?? "").trim();
-  if (!title) return;
+
+  const rawTitle = String(formData.get("title") ?? "").trim();
+  if (!rawTitle) return;
+  const rawSubtitle = String(formData.get("subtitle") ?? "");
+  const rawDescription = String(formData.get("description") ?? "");
   const priceMx = Number(formData.get("price") ?? 0);
+
+  let titleEs = rawTitle;
+  let titleEn: string | null = null;
+  let subtitleEs = rawSubtitle;
+  let subtitleEn: string | null = null;
+  let descriptionEs = rawDescription;
+  let descriptionEn: string | null = null;
+
+  if (process.env.DEEPL_API_KEY) {
+    const { translateAutoDetect } = await import("@/lib/translate");
+    const { text: toEn, sourceLang } = await translateAutoDetect(rawTitle, "en-US");
+
+    if (sourceLang.startsWith("en")) {
+      // Title entered in English → translate to Spanish, keep English in _en
+      titleEn = rawTitle;
+      const { text: es } = await translateAutoDetect(rawTitle, "es");
+      titleEs = es;
+      if (rawSubtitle) {
+        subtitleEn = rawSubtitle;
+        const { text } = await translateAutoDetect(rawSubtitle, "es");
+        subtitleEs = text;
+      }
+      if (rawDescription) {
+        descriptionEn = rawDescription;
+        const { text } = await translateAutoDetect(rawDescription, "es");
+        descriptionEs = text;
+      }
+    } else {
+      // Title entered in Spanish → translate to English for _en
+      titleEn = toEn;
+      if (rawSubtitle) {
+        const { text } = await translateAutoDetect(rawSubtitle, "en-US");
+        subtitleEn = text;
+      }
+      if (rawDescription) {
+        const { text } = await translateAutoDetect(rawDescription, "en-US");
+        descriptionEn = text;
+      }
+    }
+  }
+
   await supabase.from("courses").insert({
-    title,
-    slug: `${slugify(title)}-${Math.random().toString(36).slice(2, 6)}`,
-    subtitle: String(formData.get("subtitle") ?? ""),
-    description: String(formData.get("description") ?? ""),
+    title: titleEs,
+    subtitle: subtitleEs,
+    description: descriptionEs,
+    slug: `${slugify(titleEs)}-${Math.random().toString(36).slice(2, 6)}`,
     level: String(formData.get("level") ?? "principiante"),
     price_cents: Math.round(priceMx * 100),
-    currency: "mxn",
+    currency: String(formData.get("currency") || "usd").toLowerCase(),
     status: String(formData.get("status") ?? "borrador"),
     teacher_id: profile.id,
+    title_en: titleEn,
+    subtitle_en: subtitleEn,
+    description_en: descriptionEn,
   });
+
   revalidatePath("/admin/cursos");
 }
 
@@ -61,10 +110,15 @@ export default async function CursosAdminPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="text-3xl font-extrabold text-secondary">Gestión de cursos</h1>
-      <p className="mt-1 text-sm text-base-content/60">
-        Crea y edita cursos con módulos y capítulos interactivos.
-      </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-secondary">Gestión de cursos</h1>
+          <p className="mt-1 text-sm text-base-content/60">
+            Crea y edita cursos con módulos y capítulos interactivos.
+          </p>
+        </div>
+        {process.env.DEEPL_API_KEY && <TranslateAllButton />}
+      </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
         {/* Lista */}
@@ -142,8 +196,14 @@ export default async function CursosAdminPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="price" className="mb-1 block text-sm font-medium">Precio MXN (0 = gratis)</label>
-                <input id="price" name="price" type="number" min="0" step="1" defaultValue={0} className="input input-sm w-full" />
+                <label htmlFor="price" className="mb-1 block text-sm font-medium">Precio (0 = gratis)</label>
+                <div className="flex gap-2">
+                  <select name="currency" className="select select-sm w-24 shrink-0">
+                    <option value="usd">USD</option>
+                    <option value="mxn">MXN</option>
+                  </select>
+                  <input id="price" name="price" type="number" min="0" step="1" defaultValue={0} className="input input-sm flex-1" />
+                </div>
               </div>
               <div>
                 <label htmlFor="status" className="mb-1 block text-sm font-medium">Estado</label>

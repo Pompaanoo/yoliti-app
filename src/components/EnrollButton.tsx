@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Props {
   courseId: string;
@@ -18,6 +19,7 @@ export default function EnrollButton({
   alreadyEnrolled,
   courseSlug,
 }: Props) {
+  const t = useTranslations("course");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -28,7 +30,7 @@ export default function EnrollButton({
         onClick={() => router.push(`/aprender/${courseSlug}`)}
         className="btn btn-secondary btn-block"
       >
-        <i className="fa-solid fa-play" /> Continuar curso
+        <i className="fa-solid fa-play" /> {t("continueCourse")}
       </button>
     );
   }
@@ -47,10 +49,8 @@ export default function EnrollButton({
         body: JSON.stringify({ courseId }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error al inscribir");
-      if (data.stub) {
-        setMsg("Stripe en modo prueba — inscripción simulada. Redirigiendo…");
-      }
+      if (!res.ok) throw new Error(data.error ?? t("enrollError"));
+      if (data.stub) setMsg(t("stripeTest"));
       window.location.href = data.url;
     } catch (e) {
       setMsg((e as Error).message);
@@ -70,7 +70,7 @@ export default function EnrollButton({
         ) : (
           <>
             <i className="fa-solid fa-circle-check" />
-            {isFree ? "Inscribirme gratis" : "Inscribirme ahora"}
+            {isFree ? t("enrollFree") : t("enrollNow")}
           </>
         )}
       </button>

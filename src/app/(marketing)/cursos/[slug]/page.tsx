@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
@@ -15,7 +16,12 @@ export default async function CourseDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const supabase = await createClient();
+  const [t, tc, locale, supabase] = await Promise.all([
+    getTranslations("common"),
+    getTranslations("course"),
+    getLocale(),
+    createClient(),
+  ]);
 
   const { data: course } = await supabase
     .from("courses")
@@ -25,6 +31,10 @@ export default async function CourseDetailPage({
 
   if (!course) notFound();
   const c = course as Course;
+  const en = locale === "en";
+  const courseTitle = (en && c.title_en) || c.title;
+  const courseSubtitle = (en && c.subtitle_en) || c.subtitle;
+  const courseDescription = (en && c.description_en) || c.description;
 
   const { data: modulesData } = await supabase
     .from("modules")
@@ -70,33 +80,33 @@ export default async function CourseDetailPage({
 
           <span className="badge badge-primary mt-6 capitalize text-white">{c.level}</span>
           <h1 className="mt-3 text-4xl font-extrabold text-secondary">
-            {c.title}
+            {courseTitle}
           </h1>
-          {c.subtitle && (
-            <p className="mt-2 text-lg text-base-content/70">{c.subtitle}</p>
+          {courseSubtitle && (
+            <p className="mt-2 text-lg text-base-content/70">{courseSubtitle}</p>
           )}
 
-          {c.description && (
+          {courseDescription && (
             <div className="prose mt-8 max-w-none text-base-content/80">
               <h2 className="text-xl font-bold text-secondary">
-                Sobre este curso
+                {tc("aboutTitle")}
               </h2>
-              <p>{c.description}</p>
+              <p>{courseDescription}</p>
             </div>
           )}
 
           {/* Temario */}
           <div className="mt-10">
             <h2 className="text-xl font-bold text-secondary">
-              Contenido del curso
+              {tc("contentTitle")}
             </h2>
             <p className="text-sm text-base-content/50">
-              {modules.length} módulos · {lessonCount} lecciones
+              {tc("modulesCount", { modules: modules.length, lessons: lessonCount })}
             </p>
             <div className="mt-4 space-y-3">
               {modules.length === 0 && (
                 <p className="rounded-box border border-dashed border-base-300 p-6 text-sm text-base-content/50">
-                  El temario se mostrará aquí cuando el maestro agregue módulos.
+                  {tc("emptyContent")}
                 </p>
               )}
               {modules.map((m, i) => {
@@ -114,17 +124,14 @@ export default async function CourseDetailPage({
                         <i className="fa-solid fa-lock text-sm text-base-content/40" />
                       )}
                       <span className={locked ? "text-base-content/60" : ""}>
-                        Módulo {i + 1}: {m.title}
+                        {tc("moduleLabel", { number: i + 1 })} {m.title}
                       </span>
                     </div>
                     <div className="collapse-content">
                       {locked ? (
                         <div className="flex items-start gap-3 rounded-lg bg-base-100 p-3 text-sm text-base-content/60">
                           <i className="fa-solid fa-crown mt-0.5 text-accent" />
-                          <span>
-                            Contenido exclusivo para miembros. Inscríbete en el
-                            curso para desbloquear este módulo.
-                          </span>
+                          <span>{tc("lockedModule")}</span>
                         </div>
                       ) : (
                         <ul className="space-y-2">
@@ -159,7 +166,7 @@ export default async function CourseDetailPage({
           <div className="sticky top-24 rounded-box border border-base-300 bg-base-100 p-6 shadow-lg">
             <div className="text-3xl font-extrabold text-secondary">
               {c.price_cents === 0
-                ? "Gratis"
+                ? t("free")
                 : formatPrice(c.price_cents, c.currency)}
             </div>
             <div className="mt-6">
@@ -172,9 +179,9 @@ export default async function CourseDetailPage({
               />
             </div>
             <ul className="mt-6 space-y-3 text-sm text-base-content/70">
-              <li><i className="fa-solid fa-check text-primary" /> Acceso de por vida</li>
-              <li><i className="fa-solid fa-check text-primary" /> Certificado al completar</li>
-              <li><i className="fa-solid fa-check text-primary" /> Aprende a tu ritmo</li>
+              <li><i className="fa-solid fa-check text-primary" /> {tc("lifetimeAccess")}</li>
+              <li><i className="fa-solid fa-check text-primary" /> {tc("certificate")}</li>
+              <li><i className="fa-solid fa-check text-primary" /> {tc("selfPaced")}</li>
             </ul>
           </div>
         </aside>

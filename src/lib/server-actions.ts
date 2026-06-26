@@ -331,16 +331,40 @@ export async function updateCourse(formData: FormData) {
 
   const categoryIds = formData.getAll("category_ids").map(String).filter(Boolean);
 
+  const title = String(formData.get("title")).trim();
+  const subtitle = String(formData.get("subtitle") ?? "");
+  const description = String(formData.get("description") ?? "");
+
+  let titleEn = String(formData.get("title_en") ?? "").trim() || null;
+  let subtitleEn = String(formData.get("subtitle_en") ?? "").trim() || null;
+  let descriptionEn = String(formData.get("description_en") ?? "").trim() || null;
+
+  if (process.env.DEEPL_API_KEY) {
+    const { translateToEnglish } = await import("@/lib/translate");
+    const [t, s, d] = await Promise.all([
+      titleEn ? titleEn : title ? translateToEnglish(title) : null,
+      subtitleEn ? subtitleEn : subtitle ? translateToEnglish(subtitle) : null,
+      descriptionEn ? descriptionEn : description ? translateToEnglish(description) : null,
+    ]);
+    titleEn = t;
+    subtitleEn = s;
+    descriptionEn = d;
+  }
+
   await supabase
     .from("courses")
     .update({
-      title: String(formData.get("title")).trim(),
-      subtitle: String(formData.get("subtitle") ?? ""),
-      description: String(formData.get("description") ?? ""),
+      title,
+      subtitle,
+      description,
       cover_url: String(formData.get("cover_url") ?? "") || null,
       level: String(formData.get("level")),
       price_cents: Math.round(priceMx * 100),
+      currency: String(formData.get("currency") || "usd").toLowerCase(),
       status: String(formData.get("status")),
+      title_en: titleEn,
+      subtitle_en: subtitleEn,
+      description_en: descriptionEn,
     })
     .eq("id", id);
 
@@ -354,6 +378,76 @@ export async function updateCourse(formData: FormData) {
   revalidatePath(`/admin/cursos/${id}`);
   revalidatePath("/admin/cursos");
   revalidatePath("/cursos");
+}
+
+// ─── Auto-traducir todos los cursos ──────────────────────────
+
+export async function translateAllCourses(): Promise<number> {
+  await requireRole(["maestro", "super_admin"]);
+  const supabase = await createClient();
+
+  const { data: courses } = await supabase
+    .from("courses")
+    .select("id, title, subtitle, description, title_en, subtitle_en, description_en");
+
+  if (!courses || courses.length === 0) return 0;
+
+  const { translateAutoDetect } = await import("@/lib/translate");
+  let translated = 0;
+
+  for (const c of courses) {
+    if (!c.title) continue;
+
+    // Detectar idioma del título usando DeepL (traduciendo hacia inglés)
+    const { text: titleToEn, sourceLang } = await translateAutoDetect(c.title, "en-US");
+    const titleIsEnglish = sourceLang.startsWith("en");
+
+    let titleEs = c.title;
+    let titleEn = c.title_en ?? null;
+    let subtitleEs = c.subtitle ?? null;
+    let subtitleEn = c.subtitle_en ?? null;
+    let descriptionEs = c.description ?? null;
+    let descriptionEn = c.description_en ?? null;
+
+    if (titleIsEnglish) {
+      // title está en inglés: siempre traducir a español (aunque title_en ya exista)
+      titleEn = c.title_en || c.title;
+      const { text: es } = await translateAutoDetect(c.title, "es");
+      titleEs = es;
+      if (c.subtitle) {
+        subtitleEn = c.subtitle_en || c.subtitle;
+        const { text: es } = await translateAutoDetect(c.subtitle, "es");
+        subtitleEs = es;
+      }
+      if (c.description) {
+        descriptionEn = c.description_en || c.description;
+        const { text: es } = await translateAutoDetect(c.description, "es");
+        descriptionEs = es;
+      }
+    } else {
+      // title está en español: traducir hacia inglés para _en
+      if (!c.title_en) titleEn = titleToEn;
+      if (c.subtitle && !c.subtitle_en) {
+        const { text } = await translateAutoDetect(c.subtitle, "en-US");
+        subtitleEn = text;
+      }
+      if (c.description && !c.description_en) {
+        const { text } = await translateAutoDetect(c.description, "en-US");
+        descriptionEn = text;
+      }
+    }
+
+    await supabase
+      .from("courses")
+      .update({ title: titleEs, subtitle: subtitleEs, description: descriptionEs, title_en: titleEn, subtitle_en: subtitleEn, description_en: descriptionEn })
+      .eq("id", c.id);
+
+    translated++;
+  }
+
+  revalidatePath("/cursos");
+  revalidatePath("/admin/cursos");
+  return translated;
 }
 
 // ─── Categorías ───────────────────────────────────────────────

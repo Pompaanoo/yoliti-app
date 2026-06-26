@@ -1,11 +1,16 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import CourseCard from "@/components/CourseCard";
 import type { Category, Course } from "@/lib/types";
+import { CourseCatalog } from "./CourseCatalog";
 
 export const metadata = { title: "Cursos — Yoliti Academy" };
 
 export default async function CursosPage() {
-  const supabase = await createClient();
+  const [tc, locale, supabase] = await Promise.all([
+    getTranslations("course"),
+    getLocale(),
+    createClient(),
+  ]);
 
   const { data } = await supabase
     .from("courses")
@@ -16,12 +21,14 @@ export default async function CursosPage() {
   type RawCourse = Omit<Course, "categories"> & {
     course_categories: { categories: Category }[];
   };
+  const en = locale === "en";
   const courses: Course[] = ((data as RawCourse[]) ?? []).map((c) => ({
     ...c,
+    title: (en && c.title_en) || c.title,
+    subtitle: (en && c.subtitle_en) || c.subtitle,
     categories: (c.course_categories ?? []).map((cc) => cc.categories).filter(Boolean),
   }));
 
-  // Categorías únicas presentes en los cursos publicados para filtro
   const seenIds = new Set<string>();
   const usedCategories: Category[] = [];
   for (const c of courses) {
@@ -37,43 +44,14 @@ export default async function CursosPage() {
     <div className="mx-auto max-w-7xl px-4 py-16">
       <header className="max-w-2xl">
         <h1 className="text-4xl font-extrabold text-secondary">
-          Catálogo de cursos
+          {tc("catalogTitle")}
         </h1>
         <p className="mt-3 text-base-content/60">
-          Explora nuestros programas y empieza a aprender a tu ritmo.
+          {tc("catalogDesc")}
         </p>
       </header>
 
-      {/* Filtros por categoría */}
-      {usedCategories.length > 0 && (
-        <div className="mt-8 flex flex-wrap gap-2">
-          {usedCategories.map((cat) => (
-            <span
-              key={cat.id}
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white"
-              style={{ backgroundColor: cat.color }}
-            >
-              <i className="fa-solid fa-tag text-[10px]" />
-              {cat.name}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {courses.length > 0 ? (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((c) => (
-            <CourseCard key={c.id} course={c} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-12 rounded-box border border-dashed border-base-300 p-16 text-center text-base-content/50">
-          <i className="fa-solid fa-book-open mb-3 text-3xl" />
-          <p>
-            No hay cursos publicados todavía.
-          </p>
-        </div>
-      )}
+      <CourseCatalog courses={courses} categories={usedCategories} />
     </div>
   );
 }
