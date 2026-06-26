@@ -17,7 +17,7 @@ pagos. Mantiene la identidad visual original (paleta turquesa/coral).
 
 - **alumno** — se inscribe y toma cursos (rol por defecto al registrarse).
 - **maestro** — crea y administra sus propios cursos (`/maestro`).
-- **super_admin** — gestiona usuarios, roles y toda la plataforma (`/admin`).
+- **super_admin** — gestiona usuarios, roles y toda la plataforma (`/admin`). joto git 
 
 Las reglas se aplican en dos capas: `middleware.ts` (sesión + rutas privadas) y
 `lib/auth.ts` → `requireRole()` (autorización por rol), respaldadas por
