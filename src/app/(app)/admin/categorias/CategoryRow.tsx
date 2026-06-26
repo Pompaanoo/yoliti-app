@@ -33,7 +33,7 @@ export function CategoryRow({ cat, courseCount }: Props) {
     startTransition(async () => {
       await updateCategory(formData);
       setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      setTimeout(() => setSaved(false), 5000);
     });
   }
 

@@ -507,6 +507,7 @@ export default function ChapterContentEditor({
     startTransition(async () => {
       await saveChapterContent(fd);
       setSaved(true);
+      setTimeout(() => setSaved(false), 5000);
     });
   };
 

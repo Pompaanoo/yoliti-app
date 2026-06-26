@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { STATUS_BADGE } from "@/lib/course-status";
+import { GroupSettingsForm } from "./GroupSettingsForm";
 import { requireRole } from "@/lib/auth";
 import {
   updateGroup,
@@ -74,52 +75,7 @@ export default async function EditGrupoPage({
       {/* Datos del grupo */}
       <section className="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
         <h2 className="mb-4 font-bold text-secondary">Datos del grupo</h2>
-        <form action={updateGroup} className="grid gap-4 sm:grid-cols-2">
-          <input type="hidden" name="id" value={id} />
-          <div className="sm:col-span-2">
-            <label htmlFor="name" className="mb-1 block text-sm font-medium">Nombre</label>
-            <input
-              id="name"
-              name="name"
-              defaultValue={group.name}
-              required
-              className="input w-full"
-            />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="description" className="mb-1 block text-sm font-medium">Descripción</label>
-            <textarea
-              id="description"
-              name="description"
-              defaultValue={group.description ?? ""}
-              className="textarea h-24 w-full"
-            />
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="image_url" className="mb-1 block text-sm font-medium">URL de imagen</label>
-            <input
-              id="image_url"
-              name="image_url"
-              type="url"
-              defaultValue={group.image_url ?? ""}
-              className="input w-full"
-              placeholder="https://..."
-            />
-          </div>
-          {group.image_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={group.image_url}
-              alt=""
-              className="sm:col-span-2 h-40 w-full rounded-box object-cover"
-            />
-          )}
-          <div className="sm:col-span-2">
-            <button className="btn btn-primary">
-              <i className="fa-solid fa-floppy-disk" /> Guardar cambios
-            </button>
-          </div>
-        </form>
+        <GroupSettingsForm group={group} />
       </section>
 
       {/* Alumnos */}

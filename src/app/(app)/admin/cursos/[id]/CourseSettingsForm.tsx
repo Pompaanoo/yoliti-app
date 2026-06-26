@@ -30,7 +30,7 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
     startTransition(async () => {
       await updateCourse(formData);
       setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      setTimeout(() => setSaved(false), 5000);
     });
   }
 

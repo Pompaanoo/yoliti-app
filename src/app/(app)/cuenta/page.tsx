@@ -7,6 +7,7 @@ import {
   requestPasswordResetAction,
 } from "./actions";
 import { AvatarUploadForm } from "./_components/AvatarUploadForm";
+import { AutoDismissAlert } from "./_components/AutoDismissAlert";
 
 export const metadata = { title: "Mi cuenta — Yoliti Academy" };
 
@@ -39,18 +40,8 @@ export default async function CuentaPage({
       </div>
 
       {/* Feedback */}
-      {msg && (
-        <div className="alert alert-success text-sm">
-          <i className="fa-solid fa-circle-check" />
-          {decodeURIComponent(msg)}
-        </div>
-      )}
-      {error && (
-        <div className="alert alert-error text-sm">
-          <i className="fa-solid fa-circle-exclamation" />
-          {decodeURIComponent(error)}
-        </div>
-      )}
+      {msg && <AutoDismissAlert type="success" message={decodeURIComponent(msg)} />}
+      {error && <AutoDismissAlert type="error" message={decodeURIComponent(error)} />}
 
       {/* Foto de perfil */}
       <section className="rounded-box border border-base-300 bg-base-100 shadow-sm">
