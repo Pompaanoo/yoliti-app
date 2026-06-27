@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
 import type { Profile, UserRole } from "@/lib/types";
+import { RoleForm } from "./_components/RoleForm";
 
 export const metadata = { title: "Administración — Yoliti Academy" };
 
@@ -14,7 +15,9 @@ async function changeRole(formData: FormData) {
   const role = String(formData.get("role")) as UserRole;
 
   await supabase.from("profiles").update({ role }).eq("id", userId);
-  revalidatePath("/admin");
+  // Invalida todo el árbol de rutas para que el usuario afectado
+  // reciba permisos actualizados en su próximo request
+  revalidatePath("/", "layout");
 }
 
 export default async function AdminPage() {
@@ -98,19 +101,11 @@ export default async function AdminPage() {
                     </span>
                   </td>
                   <td>
-                    <form action={changeRole} className="flex items-center gap-2">
-                      <input type="hidden" name="userId" value={u.id} />
-                      <select
-                        name="role"
-                        defaultValue={u.role}
-                        className="select select-bordered select-xs"
-                      >
-                        <option value="alumno">Alumno</option>
-                        <option value="maestro">Maestro</option>
-                        <option value="super_admin">Super admin</option>
-                      </select>
-                      <button className="btn btn-primary btn-xs">Guardar</button>
-                    </form>
+                    <RoleForm
+                      userId={u.id}
+                      currentRole={u.role}
+                      changeRole={changeRole}
+                    />
                   </td>
                 </tr>
               ))}
