@@ -131,7 +131,14 @@
     "passwordTitle": "Contraseña", "passwordSub": "Te enviaremos un enlace seguro para establecer una nueva contraseña.",
     "passwordLink": "El enlace llega al correo registrado", "requestChange": "Solicitar cambio",
     "accountInfo": "Información de la cuenta",
-    "idLabel": "ID", "roleLabel": "Rol", "memberSince": "Miembro desde"
+    "idLabel": "ID", "roleLabel": "Rol", "memberSince": "Miembro desde",
+    "paymentsTitle": "Historial de compras",
+    "paymentsSub": "Pagos realizados en la plataforma.",
+    "colProduct": "Producto", "colAmount": "Monto", "colDate": "Fecha de pago",
+    "colStatus": "Estado", "colExpires": "Vencimiento",
+    "noExpiry": "Vitalicio", "noPayments": "No has realizado ningún pago todavía.",
+    "statusPaid": "Pagado", "statusPending": "Pendiente",
+    "statusFailed": "Fallido", "statusRefunded": "Reembolsado"
   },
   "app": {
     "myLearning": "Mi aprendizaje",
@@ -143,8 +150,21 @@
     "categories": "Categorías",
     "administration": "Administración",
     "myAccount": "Mi cuenta",
+    "teachers": "Maestros",
     "signOut": "Cerrar sesión",
     "exit": "Salir"
+  },
+  "adminMaestros": {
+    "title": "Maestros",
+    "subtitle": "Gestiona los profesores y su visibilidad pública.",
+    "empty": "No hay maestros registrados aún.",
+    "statusPublic": "Público",
+    "statusHidden": "Oculto",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "visibility": "Visibilidad",
+    "noImageWarning": "Este maestro necesita una imagen antes de poder publicarlo.",
+    "imageRequired": "Se requiere imagen"
   },
   "dashboard": {
     "title": "Mi aprendizaje",

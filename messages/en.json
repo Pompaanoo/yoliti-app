@@ -131,7 +131,14 @@
     "passwordTitle": "Password", "passwordSub": "We will send you a secure link to set a new password.",
     "passwordLink": "The link will be sent to your registered email", "requestChange": "Request change",
     "accountInfo": "Account information",
-    "idLabel": "ID", "roleLabel": "Role", "memberSince": "Member since"
+    "idLabel": "ID", "roleLabel": "Role", "memberSince": "Member since",
+    "paymentsTitle": "Purchase history",
+    "paymentsSub": "Payments made on the platform.",
+    "colProduct": "Product", "colAmount": "Amount", "colDate": "Payment date",
+    "colStatus": "Status", "colExpires": "Expiration",
+    "noExpiry": "Lifetime", "noPayments": "You have not made any payments yet.",
+    "statusPaid": "Paid", "statusPending": "Pending",
+    "statusFailed": "Failed", "statusRefunded": "Refunded"
   },
   "app": {
     "myLearning": "My learning",
@@ -141,10 +148,23 @@
     "students": "Students",
     "studentProgress": "Student progress",
     "categories": "Categories",
+    "teachers": "Teachers",
     "administration": "Administration",
     "myAccount": "My account",
     "signOut": "Sign out",
     "exit": "Exit"
+  },
+  "adminMaestros": {
+    "title": "Teachers",
+    "subtitle": "Manage instructors and their public visibility.",
+    "empty": "No teachers registered yet.",
+    "statusPublic": "Public",
+    "statusHidden": "Hidden",
+    "save": "Save",
+    "saved": "Saved",
+    "visibility": "Visibility",
+    "noImageWarning": "This teacher needs an image before they can be published.",
+    "imageRequired": "Image required"
   },
   "dashboard": {
     "title": "My learning",

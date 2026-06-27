@@ -5,6 +5,7 @@ export interface Profile {
   full_name: string | null;
   avatar_url: string | null;
   role: UserRole;
+  website_status: "publico" | "oculto";
   created_at: string;
 }
 
@@ -115,6 +116,7 @@ export interface Enrollment {
   user_id: string;
   course_id: string;
   status: "activo" | "pendiente" | "cancelado";
+  expires_at: string | null;
   created_at: string;
 }
 

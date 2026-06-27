@@ -34,6 +34,7 @@ export default async function AppLayout({
   if (isAdmin) {
     links.push(
       { href: "/admin/alumnos",    label: t("students"),         icon: "fa-user-graduate" },
+      { href: "/admin/maestros",   label: t("teachers"),         icon: "fa-chalkboard-user" },
       { href: "/admin/progreso",   label: t("studentProgress"),  icon: "fa-chart-line" },
       { href: "/admin/categorias", label: t("categories"),       icon: "fa-tags" },
       { href: "/admin",            label: t("administration"),   icon: "fa-shield-halved" }
