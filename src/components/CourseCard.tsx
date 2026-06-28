@@ -17,7 +17,7 @@ export default function CourseCard({ course }: { course: Course }) {
   return (
     <Link
       href={`/cursos/${course.slug}`}
-      className="group card overflow-hidden border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+      className="group card h-full overflow-hidden border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
     >
       <figure className="hero-gradient relative h-40">
         {course.cover_url ? (
@@ -31,7 +31,7 @@ export default function CourseCard({ course }: { course: Course }) {
           <i className="fa-solid fa-book-open text-5xl text-white/80" />
         )}
       </figure>
-      <div className="card-body gap-3 p-5">
+      <div className="card-body flex flex-col gap-3 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <span className={`badge ${LEVEL_STYLES[course.level]} badge-sm`}>
             {tl(course.level)}
@@ -49,10 +49,10 @@ export default function CourseCard({ course }: { course: Course }) {
         <h3 className="card-title text-lg leading-snug group-hover:text-primary">
           {course.title}
         </h3>
-        {course.subtitle && (
-          <p className="text-sm text-base-content/60">{course.subtitle}</p>
-        )}
-        <div className="mt-2 flex items-center justify-between">
+        <p className="min-h-[1.25rem] text-sm text-base-content/60">
+          {course.subtitle ?? ""}
+        </p>
+        <div className="mt-auto flex items-center justify-between pt-2">
           <span className="text-lg font-bold text-secondary">
             {course.price_cents === 0
               ? t("free")

@@ -351,21 +351,39 @@ export async function updateCourse(formData: FormData) {
     descriptionEn = d;
   }
 
+  // Subir portada a Supabase Storage si se adjuntó un archivo
+  let coverUrl: string | null = null;
+  const coverFile = formData.get("cover_file") as File | null;
+  if (coverFile && coverFile.size > 0) {
+    const ext = coverFile.name.split(".").pop()?.toLowerCase() ?? "jpg";
+    const path = `${id}/cover.${ext}`;
+    const buffer = Buffer.from(await coverFile.arrayBuffer());
+    const { error: uploadError } = await supabase.storage
+      .from("courses")
+      .upload(path, buffer, { contentType: coverFile.type, upsert: true });
+    if (!uploadError) {
+      const { data: { publicUrl } } = supabase.storage.from("courses").getPublicUrl(path);
+      coverUrl = `${publicUrl}?v=${Date.now()}`;
+    }
+  }
+
+  const updatePayload: Record<string, unknown> = {
+    title,
+    subtitle,
+    description,
+    level: String(formData.get("level")),
+    price_cents: Math.round(priceMx * 100),
+    currency: String(formData.get("currency") || "usd").toLowerCase(),
+    status: String(formData.get("status")),
+    title_en: titleEn,
+    subtitle_en: subtitleEn,
+    description_en: descriptionEn,
+  };
+  if (coverUrl !== null) updatePayload.cover_url = coverUrl;
+
   await supabase
     .from("courses")
-    .update({
-      title,
-      subtitle,
-      description,
-      cover_url: String(formData.get("cover_url") ?? "") || null,
-      level: String(formData.get("level")),
-      price_cents: Math.round(priceMx * 100),
-      currency: String(formData.get("currency") || "usd").toLowerCase(),
-      status: String(formData.get("status")),
-      title_en: titleEn,
-      subtitle_en: subtitleEn,
-      description_en: descriptionEn,
-    })
+    .update(updatePayload)
     .eq("id", id);
 
   await supabase.from("course_categories").delete().eq("course_id", id);

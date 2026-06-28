@@ -27,16 +27,34 @@ async function updateTeacherStatus(formData: FormData) {
     }
   }
 
-  await supabase.from("profiles").update({ website_status: status }).eq("id", userId);
+  const { error } = await supabase.from("profiles").update({ website_status: status }).eq("id", userId);
+  if (error) redirect(`/admin/maestros?error=${encodeURIComponent(error.message)}`);
+
   revalidatePath("/admin/maestros");
+  redirect(`/admin/maestros?msg=Visibilidad+actualizada+correctamente`);
+}
+
+async function updateTeacherInfo(formData: FormData) {
+  "use server";
+  await requireRole("super_admin");
+  const supabase = await createClient();
+  const userId = String(formData.get("userId"));
+  const occupation = String(formData.get("occupation") ?? "").trim() || null;
+  const bio = String(formData.get("bio") ?? "").trim() || null;
+
+  const { error } = await supabase.from("profiles").update({ occupation, bio }).eq("id", userId);
+  if (error) redirect(`/admin/maestros?error=${encodeURIComponent(error.message)}`);
+
+  revalidatePath("/admin/maestros");
+  redirect(`/admin/maestros?msg=Información+actualizada`);
 }
 
 export default async function MaestrosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; msg?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, msg } = await searchParams;
   const [, t, locale] = await Promise.all([
     requireRole("super_admin"),
     getTranslations("adminMaestros"),
@@ -81,6 +99,7 @@ export default async function MaestrosPage({
         <p className="mt-1 text-sm text-base-content/60">{t("subtitle")}</p>
       </div>
 
+      {msg && <AutoDismissAlert type="success" message={decodeURIComponent(msg)} />}
       {error && <AutoDismissAlert type="error" message={decodeURIComponent(error)} />}
 
       {teachers.length === 0 ? (
@@ -149,8 +168,29 @@ export default async function MaestrosPage({
                   </div>
                 )}
 
+                {/* Info form */}
+                <form action={updateTeacherInfo} className="flex flex-col gap-2">
+                  <input type="hidden" name="userId" value={teacher.id} />
+                  <input
+                    name="occupation"
+                    defaultValue={teacher.occupation ?? ""}
+                    placeholder="Ocupación (ej. Terapeuta/Profesor)"
+                    className="input input-sm w-full"
+                  />
+                  <textarea
+                    name="bio"
+                    defaultValue={teacher.bio ?? ""}
+                    placeholder="Descripción breve..."
+                    className="textarea textarea-sm w-full resize-none"
+                    rows={2}
+                  />
+                  <button type="submit" className="btn btn-ghost btn-xs self-end">
+                    <i className="fa-solid fa-floppy-disk" /> Guardar info
+                  </button>
+                </form>
+
                 {/* Visibility form */}
-                <form action={updateTeacherStatus} className="flex items-center gap-2 mt-auto">
+                <form action={updateTeacherStatus} className="flex items-center gap-2 mt-auto pt-2 border-t border-base-200">
                   <input type="hidden" name="userId" value={teacher.id} />
                   <label className="text-xs font-medium text-base-content/60 shrink-0">
                     {t("visibility")}

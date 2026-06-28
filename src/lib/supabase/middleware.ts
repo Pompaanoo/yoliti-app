@@ -36,7 +36,21 @@ export async function updateSession(request: NextRequest) {
 
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  // Token inválido/expirado: limpiar cookies de sesión para no repetir el error en cada request
+  if (error?.code === "refresh_token_not_found") {
+    await supabase.auth.signOut();
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    const response = NextResponse.redirect(url);
+    // Limpiar todas las cookies de Supabase
+    request.cookies.getAll().forEach(({ name }) => {
+      if (name.startsWith("sb-")) response.cookies.delete(name);
+    });
+    return response;
+  }
 
   const path = request.nextUrl.pathname;
   const isProtected = PROTECTED_PREFIXES.some((p) => path.startsWith(p));

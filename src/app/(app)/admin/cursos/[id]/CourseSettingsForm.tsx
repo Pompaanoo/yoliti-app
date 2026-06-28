@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, type SyntheticEvent } from "react";
+import { useRef, useState, useTransition, type SyntheticEvent } from "react";
 import { useTranslations } from "next-intl";
 import { updateCourse } from "@/lib/server-actions";
 import type { Category, Course, CourseLevel, CourseStatus } from "@/lib/types";
@@ -20,8 +20,10 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
   const [level, setLevel] = useState(course.level);
   const [status, setStatus] = useState(course.status);
   const [currency, setCurrency] = useState(course.currency ?? "usd");
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   function toggle(id: string) {
     setSelected((prev) =>
@@ -62,8 +64,38 @@ export function CourseSettingsForm({ course, categories, selectedCategoryIds }: 
         <textarea id="c-desc" name="description" defaultValue={course.description ?? ""} className="textarea h-24 w-full" />
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor="c-cover" className="mb-1 block text-sm font-medium">{t("coverLabel")}</label>
-        <input id="c-cover" name="cover_url" type="url" defaultValue={course.cover_url ?? ""} className="input w-full" placeholder="https://..." />
+        <label className="mb-1 block text-sm font-medium">{t("coverLabel")}</label>
+        <div className="flex items-start gap-4">
+          {(coverPreview ?? course.cover_url) && (
+            <img
+              src={coverPreview ?? course.cover_url ?? ""}
+              alt="Portada"
+              className="h-24 w-40 flex-shrink-0 rounded-lg object-cover border border-base-300"
+            />
+          )}
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => coverInputRef.current?.click()}
+              className="btn btn-ghost btn-sm justify-start"
+            >
+              <i className="fa-solid fa-arrow-up-from-bracket text-xs" />
+              {course.cover_url ? "Cambiar imagen" : "Subir imagen"}
+            </button>
+            <p className="text-xs text-base-content/40">JPG, PNG o WebP · Máx. 5 MB</p>
+          </div>
+        </div>
+        <input
+          ref={coverInputRef}
+          name="cover_file"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="sr-only"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) setCoverPreview(URL.createObjectURL(file));
+          }}
+        />
       </div>
 
       <div className="sm:col-span-2">

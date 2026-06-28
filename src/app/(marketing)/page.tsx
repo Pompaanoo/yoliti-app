@@ -21,24 +21,38 @@ export default async function HomePage() {
     getLocale(),
     createClient(),
   ]);
-  const { data } = await supabase
-    .from("courses")
-    .select("*")
-    .eq("status", "publicado")
-    .order("created_at", { ascending: false })
-    .limit(3);
+  const [{ data: coursesRaw }, { data: teachersRaw }] = await Promise.all([
+    supabase
+      .from("courses")
+      .select("*")
+      .eq("status", "publicado")
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("profiles")
+      .select("id, full_name, avatar_url, occupation, bio")
+      .eq("role", "maestro")
+      .eq("website_status", "publico")
+      .order("created_at", { ascending: true }),
+  ]);
   const en = locale === "en";
-  const courses = ((data as Course[]) ?? []).map((course) => ({
+  const courses = ((coursesRaw as Course[]) ?? []).map((course) => ({
     ...course,
     title: (en && course.title_en) || course.title,
     subtitle: (en && course.subtitle_en) || course.subtitle,
   }));
+  const teachers = (teachersRaw ?? []) as {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+    occupation: string | null;
+    bio: string | null;
+  }[];
   const recentPosts = POSTS.slice(0, 3);
 
   const statLabels = t.raw("statsLabels") as string[];
   const heroFeatures = t.raw("heroFeatures") as string[];
   const designedItems = t.raw("designedItems") as string[];
-  const mentors = t.raw("mentors") as { name: string; role: string; bio: string }[];
   const testimonials = t.raw("testimonials") as {
     quote: string;
     name: string;
@@ -242,44 +256,46 @@ export default async function HomePage() {
       </section>
 
       {/* Mentores */}
-      <section className="bg-base-100">
-        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
-          <div className="mb-12 text-center">
-            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
-              {t("mentorsLabel")}
-            </span>
-            <h2 className="mx-auto max-w-2xl text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
-              {t("mentorsTitle")}
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-base-content/60">
-              {t("mentorsDesc")}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {mentors.map((mentor, i) => (
-              <div key={mentor.name} className="flex flex-col">
-                <div className="overflow-hidden rounded-2xl bg-base-200">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={
-                      i === 0
-                        ? "https://yolitiacademy.com/wp-content/uploads/2025/10/Diseno-sin-titulo-7-e1760799166305.png"
-                        : "https://yolitiacademy.com/wp-content/uploads/2025/10/Logo-con-fondo-1.png"
-                    }
-                    alt={mentor.name}
-                    className="h-52 w-full object-cover"
-                  />
+      {teachers.length > 0 && (
+        <section className="bg-base-100">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+            <div className="mb-12 text-center">
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">
+                {t("mentorsLabel")}
+              </span>
+              <h2 className="mx-auto max-w-2xl text-3xl font-extrabold leading-tight text-secondary sm:text-4xl">
+                {t("mentorsTitle")}
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base text-base-content/60">
+                {t("mentorsDesc")}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {teachers.map((teacher) => (
+                <div key={teacher.id} className="flex flex-col">
+                  <div className="overflow-hidden rounded-2xl bg-base-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={teacher.avatar_url ?? "https://yolitiacademy.com/wp-content/uploads/2025/10/Logo-con-fondo-1.png"}
+                      alt={teacher.full_name ?? "Maestro"}
+                      className="h-52 w-full object-cover"
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="font-bold text-secondary">{teacher.full_name ?? "—"}</h3>
+                    {teacher.occupation && (
+                      <p className="mb-2 text-xs font-medium text-primary">{teacher.occupation}</p>
+                    )}
+                    {teacher.bio && (
+                      <p className="text-sm leading-relaxed text-base-content/60">{teacher.bio}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-4">
-                  <h3 className="font-bold text-secondary">{mentor.name}</h3>
-                  <p className="mb-2 text-xs font-medium text-primary">{mentor.role}</p>
-                  <p className="text-sm leading-relaxed text-base-content/60">{mentor.bio}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA — Start Your Transformation */}
       <section className="bg-neutral text-neutral-content">

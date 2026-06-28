@@ -6,6 +6,8 @@ export interface Profile {
   avatar_url: string | null;
   role: UserRole;
   website_status: "publico" | "oculto";
+  occupation: string | null;
+  bio: string | null;
   created_at: string;
 }
 
